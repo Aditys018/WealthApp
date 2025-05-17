@@ -1,16 +1,15 @@
+import { useState, useEffect } from 'react'
 import { Link, useRouterState } from '@tanstack/react-router'
-import { Button } from './ui/button'
+import { Menu, X } from 'lucide-react'
+
 import {
   Sheet,
   SheetTrigger,
   SheetContent,
-  SheetHeader,
-  SheetFooter,
   SheetClose,
-} from './ui/sheet'
-import { Menu, X } from 'lucide-react'
+} from '@/components/ui/sheet'
 import logo from '../logo.svg'
-import { useState, useEffect } from 'react'
+import { Button } from '@/components/ui/button'
 
 const navLinks = [
   { label: 'Home', to: '/' },
@@ -19,7 +18,7 @@ const navLinks = [
   { label: 'Services', to: '/services' },
 ]
 
-export default function Header() {
+export function Header() {
   const router = useRouterState()
   const currentPath = router.location.pathname
   const [isScrolled, setIsScrolled] = useState(false)
@@ -37,8 +36,8 @@ export default function Header() {
 
   return (
     <header
-      className={`fixed top-0 left-0 right-0 w-full z-50 transition-all duration-300 py-3 sm:py-4 lg:py-5 px-4 sm:px-6 lg:px-8 
-      ${isScrolled ? 'bg-black/95 shadow-lg backdrop-blur-sm' : 'bg-[#0E0E0E]'}`}
+      className="fixed top-0 left-0 right-0 w-full z-50 transition-all duration-300
+         py-3 sm:py-4 lg:py-5 px-4 sm:px-6 lg:px-8 bg-primary"
     >
       <div className="max-w-7xl mx-auto flex items-center justify-between">
         {/* Logo */}
@@ -69,7 +68,10 @@ export default function Header() {
 
           <div className="ml-2 lg:ml-6">
             <Button
-              className="bg-[#FF9500] hover:bg-[#ffb84d] text-black font-bold text-sm lg:text-lg px-4 lg:px-8 py-2 lg:py-4 rounded-lg shadow-lg hover:shadow-xl transition-all duration-300 transform hover:-translate-y-1"
+              className="bg-[#FF9500] hover:bg-[#ffb84d] text-black
+               font-bold text-sm lg:text-lg px-4 lg:px-8 py-2 lg:py-4 rounded-lg
+                shadow-lg hover:shadow-xl transition-all duration-300 transform
+                 hover:-translate-y-1"
               size="lg"
             >
               Register Now
