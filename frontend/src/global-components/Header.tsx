@@ -37,7 +37,7 @@ export function Header() {
   return (
     <header
       className="fixed top-0 left-0 right-0 w-full z-50 transition-all duration-300
-         py-3 sm:py-4 lg:py-5 px-4 sm:px-6 lg:px-8 bg-primary"
+         py-3 sm:py-4 lg:py-5 px-4 sm:px-6 lg:px-8 bg-secondary"
     >
       <div className="max-w-7xl mx-auto flex items-center justify-between">
         {/* Logo */}

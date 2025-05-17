@@ -1,7 +1,5 @@
 @import 'tailwindcss';
 
-/* @plugin "tailwindcss-animate"; */
-
 @custom-variant dark (&:is(.dark *));
 
 body {
@@ -19,6 +17,7 @@ code {
 }
 
 @theme {
-  --color-primary: '#141416';
-  --color-secondary: '#FF9500';
+  --color-primary: #262626;
+  --color-secondary: #191919;
+  --color-accent: #ff9500;
 }
