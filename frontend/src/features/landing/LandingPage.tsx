@@ -1,12 +1,30 @@
+import { contentSections } from '../config'
 import { ContentWithImage } from './components'
 
 export function LandingPage() {
   return (
-    <ContentWithImage
-      description="A powerful property intelligence platform for businesses to discover ownership data, analyse net worth, and collaborate seamlessly with the team to get all property-related details at a single place."
-      title="Streamlined Property Tracking & Team Collaboration with WealthApp"
-      imageSrc="/landing.png"
-      imagePosition="right"
-    />
+    <>
+      {contentSections.map((section) => (
+        <ContentWithImage
+          key={section.id}
+          title={section.title}
+          description={section.description}
+          imageSrc={section.imageSrc}
+          imagePosition={section.imagePosition as 'left' | 'right'}
+          className={section.className}
+          // You can add optional props here if needed for specific sections
+          onPrimaryClick={
+            section.id === 'main'
+              ? () => (window.location.href = '/register')
+              : undefined
+          }
+          onSecondaryClick={
+            section.id === 'main'
+              ? () => (window.location.href = '/learn-more')
+              : undefined
+          }
+        />
+      ))}
+    </>
   )
 }

@@ -29,7 +29,7 @@ export function ContentWithImage({
   return (
     <section
       className={cn(
-        'w-full py-12 md:py-20 px-4 sm:px-6 lg:px-8 bg-linear-to-t from-black to to-black/20 text-white',
+        'w-full py-12 md:py-20 px-4 sm:px-6 lg:px-8 text-white',
         className,
       )}
     >
