@@ -3,43 +3,43 @@ export const contentSections = [
     id: 'main',
     title: 'Streamlined Property Tracking & Team Collaboration with WealthApp',
     description:
-      'A powerful property intelligence platform for businesses to discover ownership data, analyse net worth, and collaborate seamlessly with the team to get all property-related details at a single place.',
+      'WealthApp provides detailed property ownership data and owner net worth analysis in one easy-to-use platform. Collaborate efficiently across teams with secure, role-based access and clear data visualization tools to make informed decisions quickly.',
     imageSrc: '/landing.png',
     imagePosition: 'right',
     className: 'bg-linear-to-t from-black to to-black/20',
   },
   {
     id: 'team',
-    title: 'Create your own team',
+    title: 'Company Registration & Employee Management',
     description:
-      'Register your company, Invite employees for a seamless team collaboration with a dedicated team management dashboard, Invite and revoke access rights and many more features.',
+      'Easily register your company and manage your team from a centralized dashboard. Invite employees securely, assign roles with specific permissions, monitor activity, and control access to protect sensitive information at all times.',
     imageSrc: '/teaming.png',
     imagePosition: 'left',
     className: 'bg-black text-accent',
   },
   {
     id: 'maps',
-    title: 'Search Properties on maps',
+    title: 'Interactive Property Map Interface',
     description:
-      'Search Properties on our interactive maps functionality with markers, zoom and pan functionality property clustering etc.',
+      'Navigate properties across the U.S. with a responsive, interactive map. Use smooth zoom, pan, and switch between satellite and standard views. Filter properties by value, size, and other criteria, and save custom views for faster future access.',
     imageSrc: '/world.png',
     imagePosition: 'right',
     className: 'bg-black text-accent',
   },
   {
     id: 'valuation',
-    title: 'Check Property Valuation',
+    title: 'Detailed Property Information & Valuation',
     description:
-      'Checkout property information display, Details of the property, Property valuation trends over time and the ownership history of the property.',
+      'Access key property details like address, size, valuation history, and ownership records. View transaction data and property images where available. Bookmark important properties and export data to support your workflow and reporting needs.',
     imageSrc: '/markets.png',
     imagePosition: 'left',
     className: 'bg-black text-accent',
   },
   {
     id: 'owner',
-    title: 'Check current owner details',
+    title: 'Owner Profiles & Wealth Analysis',
     description:
-      'Check the current owner profiles, official details, their name, businesses, net worth, contacts, and publicly available legal information.',
+      'Get detailed owner profiles including official records, business connections, and estimated net worth with confidence levels. Compare owners easily and stay updated with data from multiple verified sources for reliable insights.',
     imageSrc: '/owner.png',
     imagePosition: 'right',
     className: 'bg-black text-accent',

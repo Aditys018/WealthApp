@@ -1,15 +1,15 @@
-import { useState, useEffect } from 'react'
 import { Link, useRouterState } from '@tanstack/react-router'
 import { Menu, X } from 'lucide-react'
+import { useEffect, useState } from 'react'
 
+import { Button } from '@/components/ui/button'
 import {
   Sheet,
-  SheetTrigger,
-  SheetContent,
   SheetClose,
+  SheetContent,
+  SheetTrigger,
 } from '@/components/ui/sheet'
 import logo from '../logo.svg'
-import { Button } from '@/components/ui/button'
 
 const navLinks = [
   { label: 'Home', to: '/' },
@@ -19,12 +19,11 @@ const navLinks = [
 ]
 
 export function Header() {
-  const router = useRouterState()
-  const currentPath = router.location.pathname
+  const { location } = useRouterState()
+  const currentPath = location.pathname
   const [isScrolled, setIsScrolled] = useState(false)
   const [isOpen, setIsOpen] = useState(false)
 
-  // Handle scroll effect
   useEffect(() => {
     const handleScroll = () => {
       setIsScrolled(window.scrollY > 20)
@@ -36,50 +35,50 @@ export function Header() {
 
   return (
     <header
-      className="w-full z-50 transition-all duration-300
-         py-3 sm:py-4 lg:py-5 px-4 sm:px-6 lg:px-8 bg-secondary"
+      className={`w-full z-50 transition-all duration-300 px-4 sm:px-6 lg:px-8 ${
+        isScrolled ? 'py-2 sm:py-3 lg:py-4 shadow-md' : 'py-3 sm:py-4 lg:py-5'
+      } bg-secondary`}
     >
       <div className="max-w-7xl mx-auto flex items-center justify-between">
         {/* Logo */}
-        <Link to="/" className="flex items-center gap-2 group">
+        <Link to="/" className="flex items-center gap-2">
           <img
             src="/Logo.png"
             alt="WealthApp Logo"
-            className="w-[160px] h-[48px]"
+            className="w-[140px] h-[40px] object-contain"
           />
         </Link>
 
-        {/* Desktop Navigation */}
-        <nav className="hidden md:flex items-center gap-2 lg:gap-4">
-          {navLinks.map((link) => (
-            <Link
-              key={link.to}
-              to={link.to}
-              className={`px-3 py-2 lg:px-6 lg:py-2 rounded-lg font-medium transition-all duration-300 text-sm lg:text-base
-              ${
-                currentPath === link.to
-                  ? 'bg-[#262626] text-white shadow-md'
-                  : 'hover:bg-[#1a1a1a] text-white/80 hover:text-white'
-              }`}
-            >
-              {link.label}
-            </Link>
-          ))}
+        {/* Desktop Navigation - Centered */}
+        <div className="hidden md:flex flex-1 items-center justify-center">
+          <nav className="flex gap-3 lg:gap-2">
+            {navLinks.map((link) => (
+              <Link
+                key={link.to}
+                to={link.to}
+                className={`px-4 py-2 rounded-lg font-medium transition-colors duration-300 text-sm lg:text-base ${
+                  currentPath === link.to
+                    ? 'bg-[#262626] text-white shadow-md'
+                    : 'text-white/80 hover:text-white hover:bg-[#1a1a1a]'
+                }`}
+              >
+                {link.label}
+              </Link>
+            ))}
+          </nav>
+        </div>
 
-          <div className="ml-2 lg:ml-6">
-            <Button
-              className="bg-[#FF9500] hover:bg-[#ffb84d] text-black
-               font-bold text-sm lg:text-lg px-4 lg:px-8 py-2 lg:py-4 rounded-lg
-                shadow-lg hover:shadow-xl transition-all duration-300 transform
-                 hover:-translate-y-1"
-              size="lg"
-            >
-              Register Now
-            </Button>
-          </div>
-        </nav>
+        {/* Register Now Button - Right Side */}
+        <div className="hidden md:flex">
+          <Button
+            className="ml-3 lg:ml-6 bg-[#FF9500] hover:bg-[#ffb84d] text-black font-bold text-sm lg:text-lg px-4 lg:px-8 py-2 lg:py-4 rounded-lg shadow-lg hover:shadow-xl transition-transform duration-300 transform hover:-translate-y-1"
+            size="lg"
+          >
+            Register Now
+          </Button>
+        </div>
 
-        {/* Mobile Hamburger Menu */}
+        {/* Mobile Menu */}
         <div className="md:hidden">
           <Sheet open={isOpen} onOpenChange={setIsOpen}>
             <SheetTrigger asChild>
@@ -92,9 +91,10 @@ export function Header() {
                 <span className="sr-only">Open menu</span>
               </Button>
             </SheetTrigger>
+
             <SheetContent
               side="right"
-              className="bg-[#0E0E0E] text-white p-0 w-full sm:max-w-sm border-l border-white/10"
+              className="bg-[#0E0E0E] text-white p-0 w-full sm:max-w-sm border-l border-white/10 flex flex-col"
             >
               <div className="flex justify-between items-center border-b border-white/10 p-4">
                 <div className="flex items-center gap-2">
@@ -111,17 +111,16 @@ export function Header() {
                 </SheetClose>
               </div>
 
-              <div className="flex flex-col gap-6 py-8">
+              <div className="flex flex-col gap-6 py-8 flex-grow">
                 <nav className="flex flex-col gap-2 px-4">
                   {navLinks.map((link) => (
                     <SheetClose key={link.to} asChild>
                       <Link
                         to={link.to}
-                        className={`px-4 py-3 rounded-lg font-medium transition-all duration-200 text-lg flex items-center
-                        ${
+                        className={`px-4 py-3 rounded-lg font-medium text-lg transition-colors duration-200 ${
                           currentPath === link.to
                             ? 'bg-[#262626] text-white'
-                            : 'hover:bg-[#1a1a1a] text-white/80 hover:text-white'
+                            : 'text-white/80 hover:text-white hover:bg-[#1a1a1a]'
                         }`}
                         onClick={() => setIsOpen(false)}
                       >
@@ -133,14 +132,14 @@ export function Header() {
 
                 <div className="px-4 mt-auto">
                   <SheetClose asChild>
-                    <Button className="w-full bg-[#FF9500] hover:bg-[#ffb84d] text-black font-bold text-lg py-6 rounded-lg shadow-lg border-none transition-all duration-300">
+                    <Button className="w-full bg-[#FF9500] hover:bg-[#ffb84d] text-black font-bold text-lg py-6 rounded-lg shadow-lg transition-all duration-300">
                       Register Now
                     </Button>
                   </SheetClose>
                 </div>
               </div>
 
-              <div className="mt-auto p-4 border-t border-white/10 text-center text-sm text-white/60">
+              <div className="p-4 border-t border-white/10 text-center text-sm text-white/60">
                 © 2025 WealthApp. All rights reserved.
               </div>
             </SheetContent>
