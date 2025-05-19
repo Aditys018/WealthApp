@@ -13,6 +13,7 @@ interface IContentWithImageProps {
   onSecondaryClick?: () => void
   imagePosition?: 'left' | 'right'
   className?: string
+  showGetStartedButton?: boolean 
 }
 
 export function ContentWithImage({
@@ -26,6 +27,7 @@ export function ContentWithImage({
   onSecondaryClick,
   imagePosition = 'right',
   className,
+  showGetStartedButton = false, // <-- Default to false
 }: IContentWithImageProps) {
   const isLeft = imagePosition === 'left'
 
@@ -56,6 +58,20 @@ export function ContentWithImage({
             <div className="text-base sm:text-lg text-white/80 mb-9 leading-relaxed text-left">
               {typeof description === 'string' ? <p>{description}</p> : description}
             </div>
+
+            {/* Get Started Button (custom, below description) */}
+            {showGetStartedButton && (
+              <div className="flex justify-start mb-8">
+                <Button
+                  variant="ghost"
+                  size="lg"
+                  className="!bg-[#FF9500] hover:!bg-[#ffb84d] text-black font-bold px-10 py-6 rounded-lg text-xl shadow-lg hover:shadow-xl transition-all duration-300"
+                  onClick={() => window.location.href = '/register'}
+                >
+                  Get Started
+                </Button>
+              </div>
+            )}
 
             {/* Buttons */}
             {(primaryButtonText || secondaryButtonText) && (

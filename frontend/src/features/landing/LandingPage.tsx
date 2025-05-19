@@ -1,5 +1,6 @@
-import { contentSections } from '../config'
-import { ContentWithImage } from './components'
+import { contentSections } from '../config';
+import { ContentWithImage } from './components';
+import { Footer } from './components/Footer';
 
 export function LandingPage() {
   return (
@@ -12,6 +13,7 @@ export function LandingPage() {
           imageSrc={section.imageSrc}
           imagePosition={section.imagePosition as 'left' | 'right'}
           className={section.className}
+          showGetStartedButton={section.id === 'main'}
           onPrimaryClick={
             section.id === 'main'
               ? () => (window.location.href = '/register')
@@ -24,6 +26,7 @@ export function LandingPage() {
           }
         />
       ))}
+      <Footer />
     </>
   )
 }
