@@ -184,16 +184,11 @@ export const getUndertakingUsers = async (req: Request, res: Response) => {
     // Format user data
     const formattedUsers = users.map((user) => ({
       id: user._id,
-      name: `${user.basicDetails.firstName} ${user.basicDetails.lastName}`,
-      email: user.basicDetails.email,
-      age: calculateAge(user.basicDetails.birthday),
-      currentCity: user.basicDetails.currentCity,
-      contactNumber: user.basicDetails.phoneNumber,
-      currentCompany: user.workAndEducation.currentCompany,
-      status: user.profileStage,
+      name: `${user.firstName} ${user.lastName}`,
+      email: user.email,
+      age: calculateAge(user.birthday),
       lastLoginDate: user.updatedAt,
-      paymentDetails: user.paymentDetails,
-      userType: user.basicDetails.role,
+      userType: user.role,
     }));
 
     return res

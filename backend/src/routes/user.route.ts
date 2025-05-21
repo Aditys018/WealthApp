@@ -46,6 +46,8 @@ import {
 	getCities,
 	getPublicUserProfile,
 	generateAndStoreDescription,
+	verifyLoginOTP,
+	resendOTP,
 } from "../controller";
 import { checkRole } from "../middlewares";
 
@@ -93,6 +95,8 @@ const uploadMiddleware = (
 
 router.post("/register", checkRole(["ADMIN"]), registerUser);
 router.post("/login", loginUser);
+router.post("/verify-otp", verifyLoginOTP);
+router.post("/resend-otp", resendOTP);
 router.patch("/:id", updateUserProfile);
 router.get("/:id", getUserProfile);
 router.post("/upload", uploadMiddleware, uploadImages);

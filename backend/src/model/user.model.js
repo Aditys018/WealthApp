@@ -1,6 +1,6 @@
-import mongoose, {Schema} from "mongoose";
+import mongoose from "mongoose";
 
-const userProfileSchema = new Schema(
+const userProfileSchema = new mongoose.Schema(
     {
         firstName: String,
         lastName: String,
@@ -36,7 +36,7 @@ const userProfileSchema = new Schema(
             updates: {type: Boolean, default: true}
         },
         company: {
-            companyId: {type: Schema.Types.ObjectId, ref: "company"},
+            companyId: {type: mongoose.Schema.Types.ObjectId, ref: "company"},
             companyName: String,
             department: String,
             position: String,
@@ -47,7 +47,7 @@ const userProfileSchema = new Schema(
                 canRevokeAccess: {type: Boolean, default: false},
                 canManageCompanyPreferences: {type: Boolean, default: false},
             },
-            invitedBy: {type: Schema.Types.ObjectId, ref: "user"},
+            invitedBy: {type: mongoose.Schema.Types.ObjectId, ref: "user"},
             invitationDate: Date,
             lastActivity: Date,
         },
@@ -60,7 +60,6 @@ const userProfileSchema = new Schema(
             default: () => new Date(),
         },
     },
-
     {timestamps: true}
 );
 

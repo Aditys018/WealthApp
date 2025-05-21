@@ -1,0 +1,15 @@
+"use strict";
+Object.defineProperty(exports, "__esModule", { value: true });
+var express_1 = require("express");
+// import adminRoutes from "./admin.route";
+// import userRoutes from "./user.route";
+// import identityRoutes from "./identity.route";
+var company_route_1 = require("./company.route");
+var employee_route_1 = require("./employee.route");
+var router = (0, express_1.Router)();
+// router.use("/admin/", adminRoutes);
+// router.use("/user/", userRoutes);
+// router.use("/identity/", identityRoutes);
+router.use("/companies/", company_route_1.default);
+router.use("/employee/", employee_route_1.default);
+exports.default = router;

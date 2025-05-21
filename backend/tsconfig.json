@@ -9,6 +9,7 @@
     "outDir": "./dist",
     "importHelpers": true,
     "noImplicitAny": true,
+    "strict": false,
     "baseUrl": "./src",
     "paths": {
       "~/*": ["src/*"],

@@ -6,7 +6,7 @@ export enum Status {
   INACTIVE = "INACTIVE",
 }
 
-export type TRole = "ADMIN" | "USER"// Customize roles
+export type TRole = "ADMIN" | "USER" // Customize roles
 
 
 

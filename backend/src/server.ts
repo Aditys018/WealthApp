@@ -22,13 +22,12 @@ app.use("/uploads", express.static(path.join(path.dirname(""), "uploads")));
 
 db.mongoose
 	.connect(DB_URL, {
-		dbName: "the_date_crew",
+		dbName: "wealth-map",
 		useBigInt64: true,
 	})
 	.then(() => {
 		console.log("Connected to the database!");
-		initial();
-		scheduleUserDescriptionUpdate();
+		// initial();
 	})
 	.catch((err) => {
 		console.log("Cannot connect to the database!", err);
@@ -41,45 +40,45 @@ app.get("/ping", (req: Request, res: Response) => {
 
 app.listen(PORT, () => {
 	console.log(
-		`🚀 server started at http://localhost:${PORT}, ${process.env.JWT_TOKEN_SECRET}`
+		`🚀 server started at http://localhost:${PORT}`
 	);
 });
 
-const Role = db.Role;
+// const Role = db.Role;
 
 app.use(json());
 app.use(cors());
 app.use(urlencoded({ extended: true }));
-app.use("/tdc/", routes);
+app.use("/", routes);
 
 // app.use((req, res) => {
 // res.writeHead(200, { "Content-Type": "text/plain" });
 // res.end("../frontend/dist/index.html");
 
-/**
- * Check if all the Roles in `Roles` object are present in the database, if not then add them
- * @returns void
- * @async
- * @writtenBY: Divyansh Anand
- * @lastModifiedBy: Divyansh Anand
- */
-async function initial() {
-	const allRoles = Object.keys(Roles);
-	const roles = await Role.find();
+// /**
+//  * Check if all the Roles in `Roles` object are present in the database, if not then add them
+//  * @returns void
+//  * @async
+//  * @writtenBY: Divyansh Anand
+//  * @lastModifiedBy: Divyansh Anand
+//  */
+// async function initial() {
+// 	const allRoles = Object.keys(Roles);
+// 	const roles = await Role.find();
 
-	// check if all items inside allRoles is present as ids of roles, and which are not present add them to missingRoles
-	const missingRoles = allRoles.filter(
-		(role) => !roles.find((r) => r.id === role)
-	);
-	console.log("Missing Roles: ", missingRoles);
-	Role.insertMany(
-		missingRoles.map((role) => {
-			return {
-				name: role,
-				id: role,
-			};
-		})
-	).then(() => {
-		console.log("Roles added successfully");
-	});
-}
+// 	// check if all items inside allRoles is present as ids of roles, and which are not present add them to missingRoles
+// 	const missingRoles = allRoles.filter(
+// 		(role) => !roles.find((r) => r.id === role)
+// 	);
+// 	console.log("Missing Roles: ", missingRoles);
+// 	Role.insertMany(
+// 		missingRoles.map((role) => {
+// 			return {
+// 				name: role,
+// 				id: role,
+// 			};
+// 		})
+// 	).then(() => {
+// 		console.log("Roles added successfully");
+// 	});
+// }
