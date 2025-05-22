@@ -36,7 +36,7 @@ app.listen(PORT, function () {
 app.use(bodyParser.json());
 app.use(cors());
 app.use(express.urlencoded({ extended: true }));
-// app.use("/", routes);
+app.use("/", routes);
 // app.use((req, res) => {
 // res.writeHead(200, { "Content-Type": "text/plain" });
 // res.end("../frontend/dist/index.html");
