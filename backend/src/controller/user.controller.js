@@ -3,7 +3,11 @@ const bcrypt = require("bcrypt");
 
 const { UserProfile, Admin } = require("../model");
 const { generateTokens } = require("../utility");
-const { sendRegistrationEmail, createAndSendOTP, verifyOTP } = require("../utility/mailUtility");
+const {
+  sendRegistrationEmail,
+  createAndSendOTP,
+  verifyOTP,
+} = require("../utility/mailUtility");
 
 const registerSchema = Joi.object({
   role: Joi.string().valid("USER", "FREE_USER").required().label("Role"),
@@ -102,7 +106,10 @@ const registerUser = async (req, res) => {
       await sendRegistrationEmail(email, firstName);
       console.log(`Registration confirmation email sent to ${email}`);
     } catch (emailError) {
-      console.error(`Failed to send registration email to ${email}:`, emailError);
+      console.error(
+        `Failed to send registration email to ${email}:`,
+        emailError
+      );
       // Continue with registration process even if email fails
     }
 
@@ -117,56 +124,46 @@ const registerUser = async (req, res) => {
 
 const verifyLoginOTP = async (req, res) => {
   try {
-    const { email, otp } = req.body;
+    const { email, otp, otpId } = req.body;
 
     // Find user by email
-    const user = await UserProfile.findOne({ "basicDetails.email": email });
+    const user = await UserProfile.findOne({ "email": email });
     if (!user) {
       return res.status(404).json({
         message: "User not found",
-        status: false
+        status: false,
       });
     }
 
-    // Check if OTP exists and is valid
-    if (!user.otp || !user.otp.code) {
-      return res.status(400).json({
-        message: "No OTP found. Please request a new OTP",
-        status: false
-      });
-    }
+    console.log("user", user);
+
+    
 
     // Verify OTP
-    const isOTPValid = verifyOTP(otp, user.otp.code, user.otp.expiresAt);
+    const isOTPValid = verifyOTP(otp, otpId, email);
     if (!isOTPValid) {
       return res.status(401).json({
         message: "Invalid or expired OTP",
-        status: false
+        status: false,
       });
     }
 
-    // Mark OTP as verified
-    user.otp.verified = true;
-    await user.save();
-
     // Generate tokens for authenticated user
-    const tokens = generateTokens(
-      user._id.toString(),
-      user.firstName,
-      [user.role]
-    );
+    const tokens = generateTokens(user._id.toString(), user.firstName || "Admin", [
+      user.role,
+    ]);
 
     return res.status(200).json({
       message: "Login successful",
       status: true,
-      data: { tokens, user }
+      data: { tokens, user },
     });
   } catch (err) {
     return res.status(500).json({
       error: err.message,
       status: false,
       message: "OTP verification failed",
-      description: err.message
+      description: err.message,
     });
   }
 };
@@ -180,7 +177,7 @@ const resendOTP = async (req, res) => {
     if (!user) {
       return res.status(404).json({
         message: "User not found",
-        status: false
+        status: false,
       });
     }
 
@@ -191,7 +188,7 @@ const resendOTP = async (req, res) => {
     user.otp = {
       code: otp,
       expiresAt,
-      verified: false
+      verified: false,
     };
     await user.save();
 
@@ -200,15 +197,15 @@ const resendOTP = async (req, res) => {
       status: true,
       data: {
         email,
-        requiresOTP: true
-      }
+        requiresOTP: true,
+      },
     });
   } catch (err) {
     return res.status(500).json({
       error: err.message,
       status: false,
       message: "Failed to resend OTP",
-      description: err.message
+      description: err.message,
     });
   }
 };
@@ -216,17 +213,16 @@ const resendOTP = async (req, res) => {
 const loginUser = async (req, res) => {
   try {
     const { email, password } = req.body;
-    const user = await UserProfile.findOne({ "basicDetails.email": email });
+    console.log("email", email);
+    const user = await UserProfile.findOne({ "email": email });
+
     if (!user)
       return res.status(404).json({
         message:
           "You do not seem to have an account with us. Click on Get Started button if you'd like to work with us.",
       });
 
-    const isPasswordValid = await bcrypt.compare(
-      password,
-      user.password
-    );
+    const isPasswordValid = await bcrypt.compare(password, user.password);
     if (!isPasswordValid)
       return res
         .status(401)
@@ -234,34 +230,33 @@ const loginUser = async (req, res) => {
 
     // Generate and send OTP for login verification
     try {
-      const { otp, expiresAt } = await createAndSendOTP(email, user.firstName);
+      const { otp, expiresAt, id } = await createAndSendOTP(
+        email,
+        user.firstName
+      );
 
       // Update user with OTP information
       user.otp = {
         code: otp,
         expiresAt,
-        verified: false
+        verified: false,
       };
-      await user.save();
 
       return res.status(200).json({
         message: "OTP sent for verification",
         status: true,
-        data: { 
-          userId: user._id,
-          email,
-          requiresOTP: true
-        }
+        data: {
+          expiresAt,
+          id,
+        },
       });
     } catch (otpError) {
       console.error(`Failed to send OTP to ${email}:`, otpError);
 
       // Fallback to traditional login if OTP sending fails
-      const tokens = generateTokens(
-        user._id.toString(),
-        user.firstName,
-        [user.role]
-      );
+      const tokens = generateTokens(user._id.toString(), user.firstName, [
+        user.role,
+      ]);
 
       return res.json({
         message: "Login successful (OTP verification skipped)",
@@ -417,5 +412,5 @@ module.exports = {
   getUserProfile,
   uploadImages,
   updateUserProfileSchema,
-  restrictedFields
+  restrictedFields,
 };

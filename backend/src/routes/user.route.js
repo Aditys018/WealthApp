@@ -88,14 +88,9 @@ router.post("/register", checkRole(["ADMIN"]), registerUser);
 router.post("/login", loginUser);
 router.post("/verify-otp", verifyLoginOTP);
 router.post("/resend-otp", resendOTP);
-router.patch("/:id", updateUserProfile);
+// router.patch("/:id", updateUserProfile);
 router.get("/:id", getUserProfile);
 router.post("/upload", uploadMiddleware, uploadImages);
-router.get("/public/:id", getPublicUserProfile);
-router.post(
-	"/update-description",
-	checkRole(["USER", "FREE_USER"]),
-	generateAndStoreDescription
-);
+// router.get("/public/:id", getPublicUserProfile);
 
 module.exports = router;

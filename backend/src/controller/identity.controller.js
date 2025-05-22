@@ -1,5 +1,7 @@
 const Joi = require("joi");
 const jwt = require("jsonwebtoken");
+const { OTP } = require("../model");
+const { createAndSendOTP } = require("../utility/mailUtility");
 
 const getAccessTokenFromRefreshToken = async (req, res) => {
   try {
@@ -37,6 +39,34 @@ const getAccessTokenFromRefreshToken = async (req, res) => {
   }
 };
 
+const sendOtp = async (req, res) => {
+  try {
+    const { firstName, email } = req.body;
+    const { expiresAt, id } = await createAndSendOTP(email, firstName);
+    console.log("OTP sent successfully", { expiresAt, id });
+    return res.status(200).json({
+      message: "OTP sent successfully",
+      status: true,
+      data: {
+        expiresAt,
+        id,
+      },
+    });
+
+  } catch (err) {
+    return res.status(500).json({
+      error: err.message,
+      status: false,
+      message: "Failed to send OTP",
+      data: {
+        expiresAt,
+        id,
+      }
+    });
+  }
+};
+
 module.exports = {
   getAccessTokenFromRefreshToken,
+  sendOtp
 };

@@ -1,6 +1,8 @@
 const nodemailer = require("nodemailer");
 const dotenv = require("dotenv");
+const uuid = require("uuid");
 const crypto = require("crypto");
+const { OTP } = require("../model/otp.model");
 
 dotenv.config();
 
@@ -39,7 +41,7 @@ const generateOTP = (length = 6) => {
  */
 const sendRegistrationEmail = async (to, firstName) => {
   const mailOptions = {
-    from: process.env.EMAIL_FROM || "noreply@wealthapp.com",
+    from: process.env.EMAIL_FROM || "noreply@demomailtrap.co",
     to,
     subject: "Welcome to WealthApp - Registration Confirmation",
     html: `
@@ -73,7 +75,7 @@ const sendRegistrationEmail = async (to, firstName) => {
  */
 const sendLoginOTPEmail = async (to, firstName, otp) => {
   const mailOptions = {
-    from: process.env.EMAIL_FROM || "noreply@wealthapp.com",
+    from: process.env.EMAIL_FROM || "noreply@demomailtrap.co",
     to,
     subject: "WealthApp - Login Verification Code",
     html: `
@@ -106,19 +108,37 @@ const sendLoginOTPEmail = async (to, firstName, otp) => {
  * Create and send an OTP for user verification
  * @param {string} email User's email address
  * @param {string} firstName User's first name
- * @returns {Promise<{otp: string, expiresAt: Date}>} Generated OTP code and its expiration time
+ * @returns {Promise<{otp: string, expiresAt: Date, id: otp id}>} Generated OTP code and its expiration time
  */
 const createAndSendOTP = async (email, firstName) => {
   const otp = generateOTP();
   const expiresAt = new Date();
   expiresAt.setMinutes(expiresAt.getMinutes() + 10); // OTP expires in 10 minutes
 
-  await sendLoginOTPEmail(email, firstName, otp);
+  // Store OTP in the database
+  const otpEntry = new OTP({
+    id: uuid.v4(), // Unique ID for the OTP entry
+    code: otp,
+    expiresAt,
+    email,
+    verified: false, // Initially set to false
+  });
+  await otpEntry.save();
+  console.log("OTP entry created:", otpEntry);
 
-  return {
+  // Return the OTP details immediately
+  const response = {
     otp,
     expiresAt,
+    id: otpEntry.id,
   };
+
+  // Send the OTP email asynchronously
+  sendLoginOTPEmail(email, firstName, otp).catch((error) => {
+    console.error("Error sending OTP email:", error);
+  });
+
+  return response;
 };
 
 /**
@@ -128,14 +148,29 @@ const createAndSendOTP = async (email, firstName) => {
  * @param {Date} expiresAt Expiration time of the OTP
  * @returns {boolean} Boolean indicating if the OTP is valid
  */
-const verifyOTP = (providedOTP, storedOTP, expiresAt) => {
-  const now = new Date();
-
-  if (now > expiresAt) {
+const verifyOTP = async (providedOTP, otpId, email) => {
+  // Check if the provided OTP matches the stored OTP
+  const providedOTPEntry = await OTP.findOne({
+    code: providedOTP,
+    id: otpId,
+    email,
+  });
+  if (!providedOTPEntry) {
+    return false; // OTP not found
+  }
+  if (providedOTPEntry.verified) {
+    return false; // OTP already verified
+  } 
+  // check if the OTP is expired
+  if (providedOTPEntry.expiresAt < new Date()) {
     return false; // OTP has expired
   }
+  // Mark the OTP as verified
+  providedOTPEntry.verified = true;
+  await providedOTPEntry.save();
 
-  return providedOTP === storedOTP;
+
+  return true
 };
 
 /**
@@ -195,7 +230,7 @@ const sendEmployeeInvitationEmail = async (
   inviterName
 ) => {
   const mailOptions = {
-    from: process.env.EMAIL_FROM || "noreply@wealthapp.com",
+    from: process.env.EMAIL_FROM || "noreply@demomailtrap.co",
     to,
     subject: `Invitation to join ${companyName} on WealthApp`,
     html: `

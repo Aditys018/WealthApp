@@ -1,6 +1,7 @@
-import { Router } from "express";
+const Router = require("express").Router;
 const {
   getAccessTokenFromRefreshToken,
+  sendOtp
 } = require("../controller/identity.controller");
 
 const router = Router();
@@ -10,5 +11,6 @@ const router = Router();
 // });
 
 router.post("/token", getAccessTokenFromRefreshToken);
+router.post("/send-otp", sendOtp);
 
-export default router;
+module.exports = router;

@@ -1,21 +1,12 @@
 const joi = require("joi");
 const bcrypt = require("bcrypt");
 
-const { Company, UserProfile } = require('../model')
+const { Company, UserProfile } = require("../model");
 const {
   generateSecurePassword,
   sendEmployeeInvitationEmail,
 } = require("../utility/mailUtility");
-// import {
-//     generateSecurePassword,
-//     sendEmployeeInvitationEmail,
-// } from "../utility/mailUtility";
-
-// interface IBaseRequestBody {
-//     user: {
-//         id: string;
-//     };
-// }
+const { sendOtp, verifyOTP } = require("../utility/mailUtility");
 
 /**
  * Register a new company
@@ -25,7 +16,7 @@ const {
  */
 const registerCompany = async (req, res) => {
   try {
-    const userId = req.body.user.id; // Get the user ID from the authenticated user
+    const { email, password, otp, otpId } = req.body;
     const companyData = req.body;
 
     // Validate the request body
@@ -35,6 +26,24 @@ const registerCompany = async (req, res) => {
       description: joi.string().allow("").optional().label("Description"),
       website: joi.string().uri().allow("").optional().label("Website"),
       industry: joi.string().allow("").optional().label("Industry"),
+      email: joi.string().email().required().label("Email"),
+      password: joi
+        .string()
+        .min(8)
+        .regex(/[A-Z]/, "uppercase")
+        .regex(/[a-z]/, "lowercase")
+        .regex(/[0-9]/, "numbers")
+        .regex(/[^A-Za-z0-9]/, "special characters")
+        .required()
+        .label("Password")
+        .messages({
+          "string.min": "Password must be at least 8 characters long",
+          "string.pattern.name": "Password must contain at least one {#name}",
+          "string.empty": "Password is required",
+          "any.required": "Password is required",
+        }),
+      otp: joi.string().required().label("OTP"),
+      otpId: joi.string().required().label("OTP ID"),
       size: joi
         .string()
         .valid("1-10", "11-50", "51-200", "201-500", "501-1000", "1000+")
@@ -73,16 +82,31 @@ const registerCompany = async (req, res) => {
       return res.status(400).json({ message: error.message });
     }
 
-    // Find the user and update their role to COMPANY_ADMIN
-    const user = await UserProfile.findById(userId);
-    if (!user) {
-      return res.status(404).json({ message: "User not found" });
+    // Verify OTP
+    const isOtpValid = await verifyOTP(otp, otpId, email);
+    if (!isOtpValid) {
+      return res.status(400).json({ message: "Invalid or expired OTP" });
     }
+
+    // Hash the password
+    const hashedPassword = await bcrypt.hash(password, 10);
+
+    // Create the admin user
+    const admin = new UserProfile({
+      email,
+      password: hashedPassword,
+      role: "COMPANY_ADMIN",
+      company: null, // Will be updated after company creation
+      createdAt: new Date(),
+      updatedAt: new Date(),
+    });
+
+    await admin.save();
 
     // Create the company
     const company = new Company({
       ...value,
-      admin: userId,
+      admin: admin._id,
       employees: [], // Initially empty
       status: "ACTIVE",
       createdAt: new Date(),
@@ -91,9 +115,8 @@ const registerCompany = async (req, res) => {
 
     await company.save();
 
-    // Update the user's role to COMPANY_ADMIN and add company information
-    user.role = "COMPANY_ADMIN";
-    user.company = {
+    // Update the admin's company information
+    admin.company = {
       companyId: company._id,
       companyName: company.name,
       permissions: {
@@ -104,17 +127,17 @@ const registerCompany = async (req, res) => {
         canManageCompanyPreferences: true,
       },
     };
-    await user.save();
+
+    await admin.save();
 
     res.status(201).json({
-      message:
-        "Company registered successfully. You are now the company admin.",
+      message: "Company registered successfully. Admin account created.",
       data: {
         company,
-        user: {
-          id: user._id,
-          role: user.role,
-          company: user.company,
+        admin: {
+          id: admin._id,
+          email: admin.email,
+          role: admin.role,
         },
       },
     });
