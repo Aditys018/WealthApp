@@ -20,7 +20,7 @@ const {
 router.post("/register", registerCompany); // Allow any authenticated user to register a company
 // // router.get("/", checkRole(["ADMIN", "COMPANY_ADMIN"]), getAdminCompanies);
 // router.get("/:id", checkRole(["ADMIN", "COMPANY_ADMIN"]), getCompanyById);
-// router.put("/:id", checkRole(["ADMIN", "COMPANY_ADMIN"]), updateCompany);
+router.put("/:id", checkRole(["ADMIN", "COMPANY_ADMIN"]), updateCompany);
 // router.put("/:id/preferences", checkRole(["ADMIN", "COMPANY_ADMIN"]), updateCompanyPreferences);
 // // Employee management routes
 // router.post("/:companyId/employees/invite", checkRole(["ADMIN", "COMPANY_ADMIN"]), inviteEmployee);
