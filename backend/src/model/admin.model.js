@@ -1,4 +1,4 @@
-import mongoose from "mongoose";
+const mongoose = require("mongoose");
 
 // Define the Mongoose schema
 const adminSchema = new mongoose.Schema(
@@ -19,4 +19,6 @@ const adminSchema = new mongoose.Schema(
   { timestamps: true } // Automatically handles createdAt & updatedAt
 );
 
-export const Admin = mongoose.model("admin", adminSchema);
+const Admin = mongoose.model("admin", adminSchema);
+
+module.exports = { Admin };

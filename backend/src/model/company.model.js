@@ -1,4 +1,4 @@
-import mongoose from "mongoose";
+const mongoose = require("mongoose");
 
 // Define the Mongoose schema for Company
 const companySchema = new mongoose.Schema(
@@ -40,4 +40,6 @@ const companySchema = new mongoose.Schema(
   { timestamps: true } // Automatically handles createdAt & updatedAt
 );
 
-export const Company = mongoose.model("company", companySchema);
+const Company = mongoose.model("company", companySchema);
+
+module.exports = { Company };

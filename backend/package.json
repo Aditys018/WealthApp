@@ -3,10 +3,9 @@
   "version": "1.0.0",
   "main": "dist/server.js",
   "license": "MIT",
-  "type": "module",
   "scripts": {
     "start": "nodemon src/server.js",
-    "dev:server": "nodemon --watch './**/*.js' --exec 'node --experimental-specifier-resolution=node' src/server.js",
+    "dev:server": "nodemon ./src/server.js",
     "format": "prettier --write \"app/**/*.{js,jsx,json,md}\"",
     "lint": "eslint index.js App.js app --fix --ext .js --max-warnings 0 && yarn format",
     "start:server": "pm2 start src/server.js --name my-node-app",

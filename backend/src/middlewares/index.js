@@ -1,1 +1,3 @@
-export { checkRole } from "./authJwt.js";
+module.exports = {
+  checkRole: require("./authJwt").checkRole,
+};

@@ -1,8 +1,7 @@
 import { Router } from "express";
-
-import {
-  getAccessTokenFromRefreshToken
-} from "../controller";
+const {
+  getAccessTokenFromRefreshToken,
+} = require("../controller/identity.controller");
 
 const router = Router();
 

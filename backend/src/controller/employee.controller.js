@@ -373,3 +373,16 @@ const getOnboardingStatus = async (req, res) => {
     console.error("Error getting onboarding status:", error);
     return res.status(500).json({
       message: "Error getting onboarding status",
+      error: error.message,
+    });
+  }
+};
+
+module.exports = {
+  changePassword,
+  setupMFA,
+  acceptTermsOfService,
+  updateTutorialProgress,
+  updateNotificationPreferences,
+  getOnboardingStatus,
+};

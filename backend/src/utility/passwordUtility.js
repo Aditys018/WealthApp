@@ -1,4 +1,4 @@
-import joi from 'joi';
+const joi = require("joi");
 
 /**
  * Password validation schema
@@ -9,7 +9,7 @@ import joi from 'joi';
  * - At least one number
  * - At least one special character
  */
-export const passwordSchema = joi.string()
+const passwordSchema = joi.string()
   .min(8)
   .regex(/[A-Z]/, 'uppercase')
   .regex(/[a-z]/, 'lowercase')
@@ -28,7 +28,7 @@ export const passwordSchema = joi.string()
  * @param {string} password Password to validate
  * @returns {{isValid: boolean, message?: string}} Object with isValid flag and error message if invalid
  */
-export const validatePassword = (password) => {
+const validatePassword = (password) => {
   const { error } = passwordSchema.validate(password);
 
   if (error) {
@@ -46,7 +46,7 @@ export const validatePassword = (password) => {
  * @param {string} password Password to check
  * @returns {boolean} True if the password is common, false otherwise
  */
-export const isCommonPassword = (password) => {
+const isCommonPassword = (password) => {
   // List of common passwords to check against
   const commonPasswords = [
     'password', 'password123', '123456', '12345678', 'qwerty', 
@@ -62,7 +62,7 @@ export const isCommonPassword = (password) => {
  * @param {string} password Password to validate
  * @returns {{isValid: boolean, message?: string}} Object with isValid flag and error message if invalid
  */
-export const validatePasswordComprehensive = (password) => {
+const validatePasswordComprehensive = (password) => {
   // First check against schema
   const schemaValidation = validatePassword(password);
   if (!schemaValidation.isValid) {
@@ -78,4 +78,9 @@ export const validatePasswordComprehensive = (password) => {
   }
 
   return { isValid: true };
+};
+
+module.exports = {
+  validatePassword,
+  validatePasswordComprehensive,
 };

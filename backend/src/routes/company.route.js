@@ -1,10 +1,23 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
-var express_1 = require("express");
-var controller_1 = require("../controller");
-var router = (0, express_1.Router)();
+const { checkRole } = require("../middlewares");
+const Router = require("express").Router;
+var router = Router();
+const {
+    registerCompany,
+    getCompanyById,
+    updateCompany,
+    updateCompanyPreferences,
+    inviteEmployee,
+    getCompanyEmployees,
+    updateEmployeePermissions,
+    trackEmployeeActivity,
+    getEmployeeStatistics,
+    revokeEmployeeAccess,
+} = require("../controller/company.controller");
+
 // // Company management routes
-router.post("/register", controller_1.registerCompany); // Allow any authenticated user to register a company
+router.post("/register", registerCompany); // Allow any authenticated user to register a company
 // // router.get("/", checkRole(["ADMIN", "COMPANY_ADMIN"]), getAdminCompanies);
 // router.get("/:id", checkRole(["ADMIN", "COMPANY_ADMIN"]), getCompanyById);
 // router.put("/:id", checkRole(["ADMIN", "COMPANY_ADMIN"]), updateCompany);
@@ -16,4 +29,4 @@ router.post("/register", controller_1.registerCompany); // Allow any authenticat
 // router.post("/:companyId/employees/:employeeId/activity", checkRole(["ADMIN", "COMPANY_ADMIN"]), trackEmployeeActivity);
 // router.get("/:companyId/employees/statistics", checkRole(["ADMIN", "COMPANY_ADMIN"]), getEmployeeStatistics);
 // router.delete("/:companyId/employees/:employeeId", checkRole(["ADMIN", "COMPANY_ADMIN"]), revokeEmployeeAccess);
-exports.default = router;
+module.exports = router;

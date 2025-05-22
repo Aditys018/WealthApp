@@ -1,10 +1,16 @@
-import mongoose from 'mongoose';
+const mongoose = require('mongoose');
 
 mongoose.Promise = global.Promise;
 
-export {mongoose} ;
+const { Admin } = require('./admin.model.js');
+const { Role } = require('./role.model.js');
+const { UserProfile } = require('./user.model.js');
+const { Company } = require('./company.model.js');
 
-export { Admin } from './admin.model.js';
-export { Role } from './role.model.js';
-export { UserProfile } from './user.model.js';
-export { Company } from './company.model.js';
+module.exports = {
+  mongoose,
+  Admin,
+  Role,
+  UserProfile,
+  Company,
+};

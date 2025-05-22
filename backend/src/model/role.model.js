@@ -1,6 +1,6 @@
-import mongoose from "mongoose";
+const mongoose = require("mongoose")
 
-export const Role = mongoose.model(
+const Role = mongoose.model(
   "role",
   new mongoose.Schema({
     name: { type: String, required: true },
@@ -18,3 +18,5 @@ export const Role = mongoose.model(
     updatedAt: { type: Date, default: () => new Date() }
   }, { timestamps: true })
 );
+
+module.exports = { Role }

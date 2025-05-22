@@ -1,11 +1,11 @@
-import jwt from "jsonwebtoken";
+const jwt = require("jsonwebtoken");
 
 /**
  * Middleware to check if the user has the required role
  * @param {string[]} allowedRoles Array of allowed roles
  * @returns {Function} Express middleware function
  */
-export const checkRole = (allowedRoles) => {
+const checkRole = (allowedRoles) => {
   return (req, res, next) => {
     const authHeader = req.headers.authorization;
     if (!authHeader || !authHeader.startsWith("Bearer ")) {
@@ -14,10 +14,7 @@ export const checkRole = (allowedRoles) => {
 
     const token = authHeader.split(" ")[1];
     try {
-      const decoded = jwt.verify(
-        token,
-        process.env.JWT_TOKEN_SECRET
-      );
+      const decoded = jwt.verify(token, process.env.JWT_TOKEN_SECRET);
 
       const hasRole = decoded.permissions.some((role) =>
         allowedRoles.includes(role)
@@ -38,3 +35,5 @@ export const checkRole = (allowedRoles) => {
     }
   };
 };
+
+module.exports = { checkRole };

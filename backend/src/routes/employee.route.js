@@ -18,4 +18,4 @@ router.post("/change-password", (0, middlewares_1.checkRole)(employeeRoles), emp
 // router.post("/notifications/preferences", checkRole(employeeRoles), updateNotificationPreferences);
 // // Get onboarding status
 // router.get("/onboarding/status", checkRole(employeeRoles), getOnboardingStatus);
-exports.default = router;
+module.exports= router;
