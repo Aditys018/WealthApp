@@ -1,0 +1,1 @@
+export { useCompanyRegisterMutation } from './useCompanyRegisterMutation'
