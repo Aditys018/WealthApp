@@ -12,6 +12,7 @@
 
 import { Route as rootRoute } from './routes/__root'
 import { Route as RegisterImport } from './routes/register'
+import { Route as EmployeeinvitationImport } from './routes/employeeinvitation'
 import { Route as IndexImport } from './routes/index'
 import { Route as DemoTanstackQueryImport } from './routes/demo.tanstack-query'
 
@@ -20,6 +21,12 @@ import { Route as DemoTanstackQueryImport } from './routes/demo.tanstack-query'
 const RegisterRoute = RegisterImport.update({
   id: '/register',
   path: '/register',
+  getParentRoute: () => rootRoute,
+} as any)
+
+const EmployeeinvitationRoute = EmployeeinvitationImport.update({
+  id: '/employeeinvitation',
+  path: '/employeeinvitation',
   getParentRoute: () => rootRoute,
 } as any)
 
@@ -46,6 +53,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof IndexImport
       parentRoute: typeof rootRoute
     }
+    '/employeeinvitation': {
+      id: '/employeeinvitation'
+      path: '/employeeinvitation'
+      fullPath: '/employeeinvitation'
+      preLoaderRoute: typeof EmployeeinvitationImport
+      parentRoute: typeof rootRoute
+    }
     '/register': {
       id: '/register'
       path: '/register'
@@ -67,12 +81,14 @@ declare module '@tanstack/react-router' {
 
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
+  '/employeeinvitation': typeof EmployeeinvitationRoute
   '/register': typeof RegisterRoute
   '/demo/tanstack-query': typeof DemoTanstackQueryRoute
 }
 
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
+  '/employeeinvitation': typeof EmployeeinvitationRoute
   '/register': typeof RegisterRoute
   '/demo/tanstack-query': typeof DemoTanstackQueryRoute
 }
@@ -80,27 +96,35 @@ export interface FileRoutesByTo {
 export interface FileRoutesById {
   __root__: typeof rootRoute
   '/': typeof IndexRoute
+  '/employeeinvitation': typeof EmployeeinvitationRoute
   '/register': typeof RegisterRoute
   '/demo/tanstack-query': typeof DemoTanstackQueryRoute
 }
 
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
-  fullPaths: '/' | '/register' | '/demo/tanstack-query'
+  fullPaths: '/' | '/employeeinvitation' | '/register' | '/demo/tanstack-query'
   fileRoutesByTo: FileRoutesByTo
-  to: '/' | '/register' | '/demo/tanstack-query'
-  id: '__root__' | '/' | '/register' | '/demo/tanstack-query'
+  to: '/' | '/employeeinvitation' | '/register' | '/demo/tanstack-query'
+  id:
+    | '__root__'
+    | '/'
+    | '/employeeinvitation'
+    | '/register'
+    | '/demo/tanstack-query'
   fileRoutesById: FileRoutesById
 }
 
 export interface RootRouteChildren {
   IndexRoute: typeof IndexRoute
+  EmployeeinvitationRoute: typeof EmployeeinvitationRoute
   RegisterRoute: typeof RegisterRoute
   DemoTanstackQueryRoute: typeof DemoTanstackQueryRoute
 }
 
 const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
+  EmployeeinvitationRoute: EmployeeinvitationRoute,
   RegisterRoute: RegisterRoute,
   DemoTanstackQueryRoute: DemoTanstackQueryRoute,
 }
@@ -116,12 +140,16 @@ export const routeTree = rootRoute
       "filePath": "__root.tsx",
       "children": [
         "/",
+        "/employeeinvitation",
         "/register",
         "/demo/tanstack-query"
       ]
     },
     "/": {
       "filePath": "index.tsx"
+    },
+    "/employeeinvitation": {
+      "filePath": "employeeinvitation.tsx"
     },
     "/register": {
       "filePath": "register.tsx"
