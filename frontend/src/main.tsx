@@ -10,6 +10,7 @@ import { routeTree } from './routeTree.gen'
 import './index.css'
 import reportWebVitals from './reportWebVitals.ts'
 import { Toaster } from './components/ui/sonner.tsx'
+import { AuthProvider } from './context/AuthContext.tsx'
 
 // Create a new router instance
 const router = createRouter({
@@ -37,8 +38,10 @@ if (rootElement && !rootElement.innerHTML) {
   root.render(
     <StrictMode>
       <TanStackQueryProvider.Provider>
-        <RouterProvider router={router} />
-        <Toaster position="top-right" richColors />
+        <AuthProvider>
+          <RouterProvider router={router} />
+          <Toaster position="top-right" richColors />
+        </AuthProvider>
       </TanStackQueryProvider.Provider>
     </StrictMode>,
   )

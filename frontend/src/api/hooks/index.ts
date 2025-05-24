@@ -1,3 +1,5 @@
 export { useCompanyRegisterMutation } from './useCompanyRegisterMutation'
 export { useSendOTPMutation } from './useSendOtpMutation'
 export { useImageUploadMutation } from './useImageUploadMutation'
+export { useLoginMutation } from './useLoginMutation'
+export { useVerifyOtpMutation } from './useVerifyOtpMutation'
