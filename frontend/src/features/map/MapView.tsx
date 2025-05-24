@@ -9,78 +9,22 @@ import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
 import { Button } from '@/components/ui/button'
 import { Badge } from '@/components/ui/badge'
 import { MapPin, Bed, Bath, Square, Eye } from 'lucide-react'
+import { useListPlacesQuery } from '@/api'
 
 // Sample property data
-const sampleProperties = [
-  {
-    id: 1,
-    title: 'Modern Downtown Apartment',
-    price: '$450,000',
-    type: 'Apartment',
-    bedrooms: 2,
-    bathrooms: 2,
-    area: '1,200 sq ft',
-    address: '123 Main St, Downtown',
-    lat: 40.7589,
-    lng: -73.9851,
-    image: '/api/placeholder/300/200',
-    status: 'For Sale',
-  },
-  {
-    id: 2,
-    title: 'Suburban Family Home',
-    price: '$650,000',
-    type: 'House',
-    bedrooms: 4,
-    bathrooms: 3,
-    area: '2,500 sq ft',
-    address: '456 Oak Avenue, Suburbs',
-    lat: 40.7505,
-    lng: -73.9934,
-    image: '/api/placeholder/300/200',
-    status: 'For Sale',
-  },
-  {
-    id: 3,
-    title: 'Luxury Penthouse',
-    price: '$1,200,000',
-    type: 'Penthouse',
-    bedrooms: 3,
-    bathrooms: 3,
-    area: '1,800 sq ft',
-    address: '789 Park Place, Uptown',
-    lat: 40.768,
-    lng: -73.982,
-    image: '/api/placeholder/300/200',
-    status: 'Featured',
-  },
-  {
-    id: 4,
-    title: 'Cozy Studio Loft',
-    price: '$320,000',
-    type: 'Studio',
-    bedrooms: 1,
-    bathrooms: 1,
-    area: '800 sq ft',
-    address: '321 Artist Lane, Creative District',
-    lat: 40.7614,
-    lng: -73.9776,
-    image: '/api/placeholder/300/200',
-    status: 'For Sale',
-  },
-]
+
 
 // Map container style
 const containerStyle = {
   width: '100%',
-  height: '600px',
+  height: '900px',
   borderRadius: '12px',
 }
 
 // Default center (Times Square, NYC)
 const center = {
-  lat: 40.7589,
-  lng: -73.9851,
+  lat: 40.75777236287542,
+  lng: -73.9847073722187,
 }
 
 // Map options for better UX
@@ -94,9 +38,104 @@ const options = {
   fullscreenControl: true,
   styles: [
     {
-      featureType: 'poi',
-      elementType: 'labels',
+      elementType: 'geometry',
+      stylers: [{ color: '#212121' }],
+    },
+    {
+      elementType: 'labels.icon',
       stylers: [{ visibility: 'off' }],
+    },
+    {
+      elementType: 'labels.text.fill',
+      stylers: [{ color: '#757575' }],
+    },
+    {
+      elementType: 'labels.text.stroke',
+      stylers: [{ color: '#212121' }],
+    },
+    {
+      featureType: 'administrative',
+      elementType: 'geometry',
+      stylers: [{ color: '#757575' }],
+    },
+    {
+      featureType: 'administrative.country',
+      elementType: 'labels.text.fill',
+      stylers: [{ color: '#9e9e9e' }],
+    },
+    {
+      featureType: 'administrative.land_parcel',
+      stylers: [{ visibility: 'off' }],
+    },
+    {
+      featureType: 'administrative.locality',
+      elementType: 'labels.text.fill',
+      stylers: [{ color: '#bdbdbd' }],
+    },
+    {
+      featureType: 'poi',
+      elementType: 'labels.text.fill',
+      stylers: [{ color: '#757575' }],
+    },
+    {
+      featureType: 'poi.park',
+      elementType: 'geometry',
+      stylers: [{ color: '#181818' }],
+    },
+    {
+      featureType: 'poi.park',
+      elementType: 'labels.text.fill',
+      stylers: [{ color: '#616161' }],
+    },
+    {
+      featureType: 'poi.park',
+      elementType: 'labels.text.stroke',
+      stylers: [{ color: '#1b1b1b' }],
+    },
+    {
+      featureType: 'road',
+      elementType: 'geometry.fill',
+      stylers: [{ color: '#2c2c2c' }],
+    },
+    {
+      featureType: 'road',
+      elementType: 'labels.text.fill',
+      stylers: [{ color: '#8a8a8a' }],
+    },
+    {
+      featureType: 'road.arterial',
+      elementType: 'geometry',
+      stylers: [{ color: '#373737' }],
+    },
+    {
+      featureType: 'road.highway',
+      elementType: 'geometry',
+      stylers: [{ color: '#3c3c3c' }],
+    },
+    {
+      featureType: 'road.highway.controlled_access',
+      elementType: 'geometry',
+      stylers: [{ color: '#4e4e4e' }],
+    },
+    {
+      featureType: 'road.local',
+      elementType: 'labels.text.fill',
+      stylers: [{ color: '#616161' }],
+    },
+    {
+      featureType: 'transit',
+      elementType: 'labels.text.fill',
+      stylers: [{ color: '#757575' }],
+    },
+    {
+      featureType: 'water',
+      elementType: 'geometry',
+      stylers: [{ color: '#000000' }],
+    },
+    {
+      featureType: 'water',
+      elementType: 'labels.text.fill',
+      stylers: [{ color: '#3d3d3d' }],
     },
   ],
 }
@@ -104,6 +143,7 @@ const options = {
 const PropertyMap = ({ googleApiKey }) => {
   const [selectedProperty, setSelectedProperty] = useState(null)
   const [map, setMap] = useState(null)
+  const { data, isError, isLoading } = useListPlacesQuery()
 
   const onLoad = useCallback((map) => {
     setMap(map)
@@ -140,8 +180,8 @@ const PropertyMap = ({ googleApiKey }) => {
     `),
     scaledSize: { width: 32, height: 40 },
   }
-  const googleMapsRef = useRef<GoogleMap>(null);
-  console.log('googleMapsRef', googleMapsRef.current);
+  const googleMapsRef = useRef<GoogleMap>(null)
+  console.log('googleMapsRef', googleMapsRef.current)
 
   const getStatusBadgeVariant = (status) => {
     switch (status) {
@@ -161,7 +201,7 @@ const PropertyMap = ({ googleApiKey }) => {
       const bounds = map.getBounds()
 
       const zoom = map.getZoom()
-      console.log('Current Zoom Level:', zoom);
+      console.log('Current Zoom Level:', zoom)
 
       // calculate the approximate radius based on the center and bounds
       console.log('Map Bounds:', {
@@ -175,7 +215,7 @@ const PropertyMap = ({ googleApiKey }) => {
       //   center,
       //   bounds.getNorthEast()
       // )
-  
+
       if (center && bounds) {
         const ne = bounds.getNorthEast()
 
@@ -184,12 +224,13 @@ const PropertyMap = ({ googleApiKey }) => {
           console.log('Calculating radius...')
           console.log(window.google.maps.geometry)
         }
-  
-        const radius = window.google.maps.geometry.spherical.computeDistanceBetween(
-          center,
-          ne
-        )
-  
+
+        const radius =
+          window.google.maps.geometry.spherical.computeDistanceBetween(
+            center,
+            ne,
+          )
+
         console.log('Map Center:', {
           lat: center.lat(),
           lng: center.lng(),
@@ -201,20 +242,25 @@ const PropertyMap = ({ googleApiKey }) => {
 
   return (
     <div className="relative w-full h-full">
-      <LoadScript libraries={['geometry']} googleMapsApiKey="AIzaSyCOTKgJdgCv_nu989DjZjpej0pv9dLBfs4">
+      <LoadScript
+        libraries={['geometry']}
+        googleMapsApiKey="AIzaSyCOTKgJdgCv_nu989DjZjpej0pv9dLBfs4"
+      
+      >
         <GoogleMap
           ref={googleMapsRef}
           // onBoundsChanged={onBoundsChanged}
           mapContainerStyle={containerStyle}
           mapContainerClassName="rounded-xl shadow-lg"
           center={center}
-          zoom={13}
+          zoom={17}
           onLoad={onLoad}
           onUnmount={onUnmount}
           options={options}
           onIdle={handleMapIdle}
+          
         >
-          {sampleProperties.map((property) => (
+          {data?.data.map((property) => (
             <Marker
               key={property.id}
               position={{ lat: property.lat, lng: property.lng }}
@@ -299,61 +345,7 @@ const PropertyMap = ({ googleApiKey }) => {
       </LoadScript>
 
       {/* Property list sidebar */}
-      <Card className="absolute top-4 left-4 w-80 max-h-96 overflow-hidden">
-        <CardHeader className="pb-3">
-          <CardTitle className="text-lg flex items-center gap-2">
-            <MapPin className="w-5 h-5" />
-            Properties ({sampleProperties.length})
-          </CardTitle>
-        </CardHeader>
-        <CardContent className="p-0">
-          <div className="max-h-80 overflow-y-auto">
-            {sampleProperties.map((property) => (
-              <div
-                key={property.id}
-                className={`p-4 border-b border-gray-100 cursor-pointer transition-colors hover:bg-gray-50 ${
-                  selectedProperty?.id === property.id
-                    ? 'bg-blue-50 border-l-4 border-l-blue-500'
-                    : ''
-                }`}
-                onClick={() => handlePropertyClick(property)}
-              >
-                <div className="flex justify-between items-start mb-2">
-                  <h4 className="font-medium text-sm text-gray-900 line-clamp-1">
-                    {property.title}
-                  </h4>
-                  <Badge
-                    variant={getStatusBadgeVariant(property.status)}
-                    className="text-xs ml-2"
-                  >
-                    {property.status}
-                  </Badge>
-                </div>
-                <p className="text-lg font-semibold text-red-600 mb-1">
-                  {property.price}
-                </p>
-                <div className="flex items-center gap-3 text-xs text-gray-500">
-                  <span className="flex items-center gap-1">
-                    <Bed className="w-3 h-3" />
-                    {property.bedrooms}
-                  </span>
-                  <span className="flex items-center gap-1">
-                    <Bath className="w-3 h-3" />
-                    {property.bathrooms}
-                  </span>
-                  <span className="flex items-center gap-1">
-                    <Square className="w-3 h-3" />
-                    {property.area}
-                  </span>
-                </div>
-                <Badge variant="outline" className="mt-2 text-xs">
-                  {property.type}
-                </Badge>
-              </div>
-            ))}
-          </div>
-        </CardContent>
-      </Card>
+    {/*  */}
     </div>
   )
 }

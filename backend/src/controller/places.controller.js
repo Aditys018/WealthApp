@@ -14,7 +14,8 @@ const propertyList = async (req, res) => {
         latitude: lat,
         longitude: lng,
         radius: 2,
-        pagesize: 25
+        pagesize: 100,
+        propertyType: "APARTMENT"
       },
       headers: {
         Accept: 'application/json',
@@ -33,7 +34,11 @@ const propertyList = async (req, res) => {
       lng: parseFloat(p.location?.longitude),
     }));
 
-    res.json(properties);
+    res.status(200).json({
+      message: 'Properties fetched successfully',
+      status: true,
+      data: properties,
+    });
   } catch (error) {
     console.error('Error fetching properties:', error?.response?.data || error.message);
     res.status(500).json({ error: 'Failed to fetch properties' });
