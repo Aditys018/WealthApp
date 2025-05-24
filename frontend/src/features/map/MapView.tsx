@@ -1,4 +1,4 @@
-import React, { useState, useCallback } from 'react'
+import React, { useState, useCallback, useRef } from 'react'
 import {
   GoogleMap,
   LoadScript,
@@ -140,6 +140,8 @@ const PropertyMap = ({ googleApiKey }) => {
     `),
     scaledSize: { width: 32, height: 40 },
   }
+  const googleMapsRef = useRef<GoogleMap>(null);
+  console.log('googleMapsRef', googleMapsRef.current);
 
   const getStatusBadgeVariant = (status) => {
     switch (status) {
@@ -152,10 +154,57 @@ const PropertyMap = ({ googleApiKey }) => {
     }
   }
 
+  const handleMapIdle = useCallback(() => {
+    if (map) {
+      console.log('Map is idle, fetching center and bounds...')
+      const center = map.getCenter()
+      const bounds = map.getBounds()
+
+      const zoom = map.getZoom()
+      console.log('Current Zoom Level:', zoom);
+
+      // calculate the approximate radius based on the center and bounds
+      console.log('Map Bounds:', {
+        northEast: bounds.getNorthEast().toJSON(),
+        southWest: bounds.getSouthWest().toJSON(),
+      })
+      console.log('Map Center:', center.toJSON())
+      console.log('Map Zoom Level:', zoom)
+      // If you need to calculate the radius, you can use the center and bounds
+      // const radius = window.google.maps.geometry.spherical.computeDistanceBetween(
+      //   center,
+      //   bounds.getNorthEast()
+      // )
+  
+      if (center && bounds) {
+        const ne = bounds.getNorthEast()
+
+        if (window.google) {
+          console.log('Google Maps Geometry library is loaded.')
+          console.log('Calculating radius...')
+          console.log(window.google.maps.geometry)
+        }
+  
+        const radius = window.google.maps.geometry.spherical.computeDistanceBetween(
+          center,
+          ne
+        )
+  
+        console.log('Map Center:', {
+          lat: center.lat(),
+          lng: center.lng(),
+        })
+        console.log('Approx. Radius (meters):', radius)
+      }
+    }
+  }, [map])
+
   return (
     <div className="relative w-full h-full">
-      <LoadScript googleMapsApiKey={googleApiKey}>
+      <LoadScript libraries={['geometry']} googleMapsApiKey="AIzaSyCOTKgJdgCv_nu989DjZjpej0pv9dLBfs4">
         <GoogleMap
+          ref={googleMapsRef}
+          // onBoundsChanged={onBoundsChanged}
           mapContainerStyle={containerStyle}
           mapContainerClassName="rounded-xl shadow-lg"
           center={center}
@@ -163,6 +212,7 @@ const PropertyMap = ({ googleApiKey }) => {
           onLoad={onLoad}
           onUnmount={onUnmount}
           options={options}
+          onIdle={handleMapIdle}
         >
           {sampleProperties.map((property) => (
             <Marker
