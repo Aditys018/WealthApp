@@ -1,5 +1,6 @@
-import express, { Router } from "express";
-import multer, { FileFilterCallback } from "multer";
+const express = require("express");
+const { Router } = require("express");
+const multer = require("multer");
 
 const storage = multer.diskStorage({
 	destination: function (req, file, cb) {
@@ -10,17 +11,13 @@ const storage = multer.diskStorage({
 	},
 });
 
-const fileFilter = (
-	_: unknown,
-	file: Express.Multer.File,
-	cb: FileFilterCallback
-) => {
+const fileFilter = (_, file, cb) => {
 	// reject a file
 	if (
 		file.mimetype === "image/jpeg" ||
-    file.mimetype === "image/png" ||
-    file.mimetype === "image/heic" ||
-    file.mimetype === "application/pdf"
+		file.mimetype === "image/png" ||
+		file.mimetype === "image/heic" ||
+		file.mimetype === "application/pdf"
 	) {
 		cb(null, true);
 	} else {
@@ -36,28 +33,22 @@ const upload = multer({
 	fileFilter: fileFilter,
 });
 
-import {
+const {
 	registerUser,
 	loginUser,
 	updateUserProfile,
 	getUserProfile,
 	uploadImages,
-	getCountries,
-	getCities,
-	getPublicUserProfile,
-	generateAndStoreDescription,
-} from "../controller";
-import { checkRole } from "../middlewares";
+	verifyLoginOTP,
+	resendOTP,
+} = require("../controller");
+const { checkRole } = require("../middlewares");
 
 const router = Router();
 
 // Create a wrapper function
-const uploadMiddleware = (
-	req: express.Request,
-	res: express.Response,
-	next: express.NextFunction
-) => {
-	upload.single("image")(req as any, res as any, (err) => {
+const uploadMiddleware = (req, res, next) => {
+	upload.single("image")(req, res, (err) => {
 		if (err) {
 			if (err instanceof multer.MulterError) {
 				// Handle Multer-specific errors
@@ -72,7 +63,7 @@ const uploadMiddleware = (
 				return res.status(400).json({
 					success: false,
 					message:
-            "Invalid file type. Only JPEG, PNG, and PDF files are allowed.",
+						"Invalid file type. Only JPEG, PNG, and PDF files are allowed.",
 				});
 			} else {
 				// Handle other errors
@@ -93,16 +84,11 @@ const uploadMiddleware = (
 
 router.post("/register", checkRole(["ADMIN"]), registerUser);
 router.post("/login", loginUser);
-router.patch("/:id", updateUserProfile);
+router.post("/verify-otp", verifyLoginOTP);
+router.post("/resend-otp", resendOTP);
+// router.patch("/:id", updateUserProfile);
 router.get("/:id", getUserProfile);
 router.post("/upload", uploadMiddleware, uploadImages);
-router.get("/countries/list", getCountries);
-router.get("/cities/:countryCode", getCities);
-router.get("/public/:id", getPublicUserProfile);
-router.post(
-	"/update-description",
-	checkRole(["USER", "FREE_USER"]),
-	generateAndStoreDescription
-);
+// router.get("/public/:id", getPublicUserProfile);
 
-export default router;
+module.exports = router;
