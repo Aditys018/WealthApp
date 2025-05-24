@@ -1,4 +1,8 @@
-import { useCompanyRegisterMutation, useSendOTPMutation } from '@/api'
+import {
+  useCompanyRegisterMutation,
+  useImageUploadMutation,
+  useSendOTPMutation,
+} from '@/api'
 import { useEffect, useState } from 'react'
 import { useForm } from 'react-hook-form' // No need for Controller or zodResolver now
 import { toast } from 'sonner'
@@ -45,7 +49,7 @@ export function RegisterCompany() {
       confirmPassword: '',
       contactPhone: '',
       // TODO: remove this hardcoded once image upload is integrated
-      logo: 'https://dummyimage.com/300',
+      logo: '',
       address: {
         street: '',
         city: '',
@@ -59,6 +63,7 @@ export function RegisterCompany() {
 
   // Watch the logo field to create a preview URL
   const logoFile = watch('logo')
+  const [localFile, setLocalFile] = useState<File | null>(null)
   const [logoPreview, setLogoPreview] = useState<string | null>(null)
   const [otpId, setOtpId] = useState('')
 
@@ -66,15 +71,40 @@ export function RegisterCompany() {
 
   const { mutate: sendOtp } = useSendOTPMutation()
 
+  const { mutate: uploadLogo } = useImageUploadMutation()
+
+  const handleLogoChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0] ?? null
+    console.log('Selected file:', file)
+    setLocalFile(file)
+  }
+
   useEffect(() => {
-    if (logoFile instanceof File) {
-      const url = URL.createObjectURL(logoFile)
-      setLogoPreview(url)
-      return () => URL.revokeObjectURL(url)
-    } else {
+    if (!localFile) {
       setLogoPreview(null)
+      return
     }
-  }, [logoFile])
+    const previewUrl = URL.createObjectURL(localFile)
+    setLogoPreview(previewUrl)
+
+    uploadLogo(
+      {
+        file: localFile,
+      },
+      {
+        onSuccess: (data) => {
+          // Set the logo URL in the form state
+          setValue('logo', data.link)
+          toast.success(data.message)
+        },
+        onError: (error) => {
+          toast.error(error.message)
+        },
+      },
+    )
+
+    return () => URL.revokeObjectURL(previewUrl)
+  }, [localFile])
 
   // Get password value to compare with confirmPassword for validation
   const password = watch('password')
@@ -184,13 +214,7 @@ export function RegisterCompany() {
                   type="file"
                   accept="image/*"
                   // Manually handle file input change with RHF's setValue
-                  onChange={(e) =>
-                    setValue(
-                      'logo',
-                      e.target.files ? e.target.files[0] : null,
-                      { shouldValidate: true },
-                    )
-                  }
+                  onChange={handleLogoChange}
                   className="absolute w-full h-full opacity-0 cursor-pointer"
                 />
 
@@ -212,7 +236,6 @@ export function RegisterCompany() {
                   {(logoFile as File).name}
                 </p>
               )}
-              {/* No direct error for logo here as it's optional */}
             </div>
           </div>
         </div>

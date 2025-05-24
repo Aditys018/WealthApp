@@ -1,4 +1,4 @@
-import { axiosClient, registerCompanyUrl, sendOTPUrl } from '@/api'
+import { axiosClient, sendOTPUrl } from '@/api'
 import { ISendOtpPayload, ISendOtpResponse } from './types'
 
 export const identityService = {

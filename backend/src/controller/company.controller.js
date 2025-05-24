@@ -22,7 +22,7 @@ const registerCompany = async (req, res) => {
     // Validate the request body
     const companySchema = joi.object({
       name: joi.string().required().label("Company Name"),
-      logo: joi.string().uri().allow("").optional().label("Logo URL"),
+      logo: joi.string().allow("").optional().label("Logo URL"),
       description: joi.string().allow("").optional().label("Description"),
       website: joi.string().uri().allow("").optional().label("Website"),
       industry: joi.string().allow("").optional().label("Industry"),
@@ -274,7 +274,7 @@ const inviteEmployee = async (req, res) => {
   try {
     const { companyId } = req.params;
     const { email, role, firstName, lastName } = req.body;
-  const adminId = req.body.user.id;
+    const adminId = req.body.user.id;
 
     // Validate input
     if (!email || !role) {
@@ -296,7 +296,7 @@ const inviteEmployee = async (req, res) => {
 
     // Check if the user already exists
     const existingUser = await UserProfile.findOne({
-      "email": email,
+      email: email,
     });
 
     if (existingUser) {
