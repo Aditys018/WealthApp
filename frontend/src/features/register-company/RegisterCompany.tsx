@@ -96,7 +96,6 @@ export function RegisterCompany() {
           setOtpId(data.data.id)
           toast.success(data.message)
         },
-        // TODO: handle error & check why toast not showing
         onError: (error) => {
           toast.error(error.message)
         },
@@ -110,11 +109,21 @@ export function RegisterCompany() {
     // Filter out confirmPassword as it's client-side only
     const { confirmPassword, ...payloadToSend } = data
 
-    // @ts-expect-error fix this later
-    mutate({
-      ...payloadToSend,
-      otpId,
-    })
+    mutate(
+      // @ts-expect-error fix this later
+      {
+        ...payloadToSend,
+        otpId,
+      },
+      {
+        onSuccess: (data) => {
+          toast.success(data.message)
+        },
+        onError: (error) => {
+          toast.error(error.message)
+        },
+      },
+    )
 
     // The logo needs special handling as it's a File and RegisterCompanyPayload expects it
   }
