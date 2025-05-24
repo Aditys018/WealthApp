@@ -3,4 +3,5 @@ module.exports = {
     ...require('./company.controller'),
     ...require('./employee.controller'),
     ...require('./identity.controller'),
+    ...require('./places.controller'),
   };

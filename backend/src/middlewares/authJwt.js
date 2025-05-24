@@ -24,8 +24,11 @@ const checkRole = (allowedRoles) => {
           .status(403)
           .json({ message: "Forbidden: Insufficient permissions" });
       }
-      // append the decoded token to the request object
-      // req.body.decoded = decoded;
+       // Append the decoded token to the request object
+      req.user = {
+        id: decoded.id,
+      };
+      console.log("User ID:", req.user.id);
       next();
     } catch (error) {
       if (error instanceof jwt.TokenExpiredError) {
