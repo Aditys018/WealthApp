@@ -273,8 +273,8 @@ const updateCompanyPreferences = async (req, res) => {
 const inviteEmployee = async (req, res) => {
   try {
     const { companyId } = req.params;
-    const { email, role } = req.body;
-    const adminId = req.body.user.id;
+    const { email, role, firstName, lastName } = req.body;
+  const adminId = req.body.user.id;
 
     // Validate input
     if (!email || !role) {
@@ -296,7 +296,7 @@ const inviteEmployee = async (req, res) => {
 
     // Check if the user already exists
     const existingUser = await UserProfile.findOne({
-      "basicDetails.email": email,
+      "email": email,
     });
 
     if (existingUser) {
@@ -370,11 +370,12 @@ const inviteEmployee = async (req, res) => {
             : admin.email;
 
         // Extract first name from email if not provided
-        const firstName = email.split("@")[0];
+        const firstNam = firstName || email.split("@")[0];
 
         // Create the new user
         const newUser = new UserProfile({
-          firstName: firstName,
+          firstName: firstNam,
+          lastName,
           email: email,
           role: role === "ADMIN" ? "COMPANY_ADMIN" : "EMPLOYEE",
           password: hashedPassword,
