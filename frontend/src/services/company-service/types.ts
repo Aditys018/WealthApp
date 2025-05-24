@@ -13,6 +13,7 @@ export interface IRegisterCompanyPayload {
   logo: string
   industry: string
   contactPhone: string
+  otpId: string
 }
 
 export interface IRegisterCompanyResponse {

@@ -10,24 +10,19 @@ import { toast } from 'sonner'
 // This matches your initial form state, but now it's a type for RHF.
 interface RegisterCompanyFormData {
   name: string
-  sector: string
+  industry: string
   email: string
   otp: string
   password: string
   confirmPassword: string
-  phone: string
+  contactPhone: string
   logo: File | string | null
   address: {
     street: string
     city: string
     state: string
     country: string
-    pincode: string
-  }
-  dataAccessPreferences: {
-    allowEmail: boolean
-    allowPhone: boolean
-    allowLocation: boolean
+    zipCode: string
   }
 }
 
@@ -43,24 +38,20 @@ export function RegisterCompany() {
     defaultValues: {
       // Set initial form values
       name: '',
-      sector: '',
+      industry: '',
       email: '',
       otp: '',
       password: '',
       confirmPassword: '',
-      phone: '',
+      contactPhone: '',
+      // TODO: remove this hardcoded once image upload is integrated
       logo: 'https://dummyimage.com/300',
       address: {
         street: '',
         city: '',
         state: '',
         country: '',
-        pincode: '',
-      },
-      dataAccessPreferences: {
-        allowEmail: false,
-        allowPhone: false,
-        allowLocation: false,
+        zipCode: '',
       },
     },
     mode: 'onTouched', // Validate on blur/change after first interaction
@@ -105,6 +96,10 @@ export function RegisterCompany() {
           setOtpId(data.data.id)
           toast.success(data.message)
         },
+        // TODO: handle error & check why toast not showing
+        onError: (error) => {
+          toast.error(error.message)
+        },
       },
     )
   }
@@ -115,7 +110,11 @@ export function RegisterCompany() {
     // Filter out confirmPassword as it's client-side only
     const { confirmPassword, ...payloadToSend } = data
 
-    mutate(payloadToSend as any)
+    // @ts-expect-error fix this later
+    mutate({
+      ...payloadToSend,
+      otpId,
+    })
 
     // The logo needs special handling as it's a File and RegisterCompanyPayload expects it
   }
@@ -146,19 +145,19 @@ export function RegisterCompany() {
               className={inputClass}
             />
             {errors.name && <p className={errorClass}>{errors.name.message}</p>}
-            {/* Sector below Company Name */}
+            {/* industry below Company Name */}
             <div className="mt-4">
-              <label className={labelClass} htmlFor="sector">
-                Sector
+              <label className={labelClass} htmlFor="industry">
+                Industry
               </label>
               <input
-                id="sector"
-                {...register('sector', { required: 'Sector is required' })}
-                placeholder="Enter sector"
+                id="industry"
+                {...register('industry', { required: 'Industry is required' })}
+                placeholder="Enter industry"
                 className={inputClass}
               />
-              {errors.sector && (
-                <p className={errorClass}>{errors.sector.message}</p>
+              {errors.industry && (
+                <p className={errorClass}>{errors.industry.message}</p>
               )}
             </div>
           </div>
@@ -306,26 +305,28 @@ export function RegisterCompany() {
           </div>
         </div>
 
-        {/* Phone */}
+        {/* contactPhone */}
         <div>
-          <label className={labelClass} htmlFor="phone">
+          <label className={labelClass} htmlFor="contactPhone">
             Phone Number
           </label>
           <input
-            id="phone"
+            id="contactPhone"
             type="tel"
-            {...register('phone', {
+            {...register('contactPhone', {
               required: 'Phone number is required',
               minLength: {
                 value: 10,
                 message: 'Phone number must be at least 10 digits',
               },
-              // Add a more robust phone number pattern if needed
+              // Add a more robust contactPhone number pattern if needed
             })}
             placeholder="Enter phone number"
             className={inputClass}
           />
-          {errors.phone && <p className={errorClass}>{errors.phone.message}</p>}
+          {errors.contactPhone && (
+            <p className={errorClass}>{errors.contactPhone.message}</p>
+          )}
         </div>
 
         {/* Address */}
@@ -401,19 +402,19 @@ export function RegisterCompany() {
           </div>
 
           <div>
-            <label className={labelClass} htmlFor="address.pincode">
+            <label className={labelClass} htmlFor="address.zipCode">
               Pincode
             </label>
             <input
-              id="address.pincode"
-              {...register('address.pincode', {
+              id="address.zipCode"
+              {...register('address.zipCode', {
                 required: 'Pincode is required',
               })}
               placeholder="Pincode"
               className={inputClass}
             />
-            {errors.address?.pincode && (
-              <p className={errorClass}>{errors.address.pincode.message}</p>
+            {errors.address?.zipCode && (
+              <p className={errorClass}>{errors.address.zipCode.message}</p>
             )}
           </div>
         </fieldset>
@@ -442,7 +443,7 @@ export function RegisterCompany() {
                 {...register('dataAccessPreferences.allowPhone')}
                 className="mr-2"
               />
-              <label htmlFor="allowPhone">Allow Phone Access</label>
+              <label htmlFor="allowPhone">Allow contactPhone Access</label>
             </div>
             <div>
               <input
