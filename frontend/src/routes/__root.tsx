@@ -1,8 +1,10 @@
-import { Outlet, createRootRouteWithContext } from '@tanstack/react-router'
+import {
+  Outlet,
+  createRootRouteWithContext,
+  useLocation,
+} from '@tanstack/react-router'
 import { TanStackRouterDevtools } from '@tanstack/react-router-devtools'
-
 import TanStackQueryLayout from '../integrations/tanstack-query/layout.tsx'
-
 import type { QueryClient } from '@tanstack/react-query'
 import { Header } from '@/global-components'
 
@@ -11,14 +13,23 @@ interface MyRouterContext {
 }
 
 export const Route = createRootRouteWithContext<MyRouterContext>()({
-  component: () => (
+  component: RootComponent,
+})
+
+function RootComponent() {
+  const location = useLocation()
+  const pathname = location.pathname
+
+  const hiddenHeaderPaths = ['/', '/register']
+  const shouldHideHeader = hiddenHeaderPaths.includes(pathname)
+
+  return (
     <>
-      <Header />
+      {!shouldHideHeader ? <Header /> : null}
 
       <Outlet />
       <TanStackRouterDevtools />
-
       <TanStackQueryLayout />
     </>
-  ),
-})
+  )
+}
