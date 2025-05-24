@@ -62,13 +62,11 @@ axiosClient.interceptors.response.use(
       switch (status) {
         case 400:
           console.error('Bad Request:', data)
-          // Potentially show a generic "bad request" message to the user
-          break
+          // @ts-expect-error fix this later
+          throw new Error(data?.message ?? 'Bad Request') // Propagate error with message
         case 401:
           console.warn('Unauthorized: Token expired or invalid.')
-          // Redirect to login page or trigger token refresh flow
-          // Example: window.location.href = '/login';
-          // Or dispatch an auth context logout action
+          window.location.href = '/' // Redirect to login page
           break
         case 403:
           console.error(
@@ -81,13 +79,14 @@ axiosClient.interceptors.response.use(
             'Not Found: The requested resource was not found.',
             data,
           )
-          break
+          // @ts-expect-error fix this later
+          throw new Error(data?.message ?? 'Please check the URL.')
         case 500:
           console.error(
             'Server Error: Something went wrong on the server.',
             data,
           )
-          break
+          throw new Error('Internal Server Error. Please try again later.')
         default:
           console.error(`Unhandled API Error (Status: ${status}):`, data)
           break
