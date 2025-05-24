@@ -9,6 +9,7 @@ import { routeTree } from './routeTree.gen'
 
 import './index.css'
 import reportWebVitals from './reportWebVitals.ts'
+import { Toaster } from './components/ui/sonner.tsx'
 
 // Create a new router instance
 const router = createRouter({
@@ -37,6 +38,7 @@ if (rootElement && !rootElement.innerHTML) {
     <StrictMode>
       <TanStackQueryProvider.Provider>
         <RouterProvider router={router} />
+        <Toaster position="top-right" richColors />
       </TanStackQueryProvider.Provider>
     </StrictMode>,
   )

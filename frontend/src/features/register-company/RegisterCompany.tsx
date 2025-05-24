@@ -1,6 +1,7 @@
-import { useCompanyRegisterMutation } from '@/api'
+import { useCompanyRegisterMutation, useSendOTPMutation } from '@/api'
 import { useEffect, useState } from 'react'
 import { useForm } from 'react-hook-form' // No need for Controller or zodResolver now
+import { toast } from 'sonner'
 
 // Import your custom hooks and types
 
@@ -15,7 +16,7 @@ interface RegisterCompanyFormData {
   password: string
   confirmPassword: string
   phone: string
-  logo: File | null
+  logo: File | string | null
   address: {
     street: string
     city: string
@@ -45,11 +46,10 @@ export function RegisterCompany() {
       sector: '',
       email: '',
       otp: '',
-      otpId: '',
       password: '',
       confirmPassword: '',
       phone: '',
-      logo: null,
+      logo: 'https://dummyimage.com/300',
       address: {
         street: '',
         city: '',
@@ -69,8 +69,11 @@ export function RegisterCompany() {
   // Watch the logo field to create a preview URL
   const logoFile = watch('logo')
   const [logoPreview, setLogoPreview] = useState<string | null>(null)
+  const [otpId, setOtpId] = useState('')
 
   const { mutate } = useCompanyRegisterMutation()
+
+  const { mutate: sendOtp } = useSendOTPMutation()
 
   useEffect(() => {
     if (logoFile instanceof File) {
@@ -88,23 +91,22 @@ export function RegisterCompany() {
   const handleSendOtp = async () => {
     const email = watch('email') // Get current email from form
     if (!email) {
-      alert('Please enter an email before sending OTP.')
+      toast.error('Please enter your email before sending OTP.')
       return
     }
-    // You could also trigger email validation here if needed:
-    // await trigger('email');
-    // if (errors.email) return;
-  }
 
-  const handleVerifyOtp = async () => {
-    const email = watch('email')
-    const otp = watch('otp')
-    const otpId = watch('otpId')
-
-    if (!email || !otp || !otpId) {
-      alert('Please fill in email, OTP, and make sure OTP is sent.')
-      return
-    }
+    sendOtp(
+      {
+        email,
+        firstName: watch('name'),
+      },
+      {
+        onSuccess: (data) => {
+          setOtpId(data.data.id)
+          toast.success(data.message)
+        },
+      },
+    )
   }
 
   const onSubmit = async (data: RegisterCompanyFormData) => {
@@ -113,7 +115,7 @@ export function RegisterCompany() {
     // Filter out confirmPassword as it's client-side only
     const { confirmPassword, ...payloadToSend } = data
 
-    mutate(data as any)
+    mutate(payloadToSend as any)
 
     // The logo needs special handling as it's a File and RegisterCompanyPayload expects it
   }
@@ -256,15 +258,7 @@ export function RegisterCompany() {
             />
             {errors.otp && <p className={errorClass}>{errors.otp.message}</p>}
             {/* Hidden input for otpId, it's managed by setValue */}
-            <input type="hidden" {...register('otpId')} />
           </div>
-          <button
-            type="button"
-            onClick={handleVerifyOtp}
-            className="px-4 py-2 rounded-md bg-[#ff9500] text-black font-semibold hover:bg-[#e28500] disabled:opacity-50 disabled:cursor-not-allowed"
-          >
-            Verify OTP
-          </button>
         </div>
 
         {/* Password and Confirm Password */}

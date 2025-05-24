@@ -1,5 +1,3 @@
-// src/hooks/useRegisterCompany.ts
-
 import { useMutation, useQueryClient } from '@tanstack/react-query'
 import {
   companyService,
@@ -19,7 +17,6 @@ export const useCompanyRegisterMutation = () => {
     mutationFn: companyService.registerCompany,
     onSuccess: (data) => {
       console.log('Company registered successfully:', data)
-      //   alert('Company Registered Successfully! ID: ' + data.companyId)
 
       // Invalidate any queries that might depend on company data
       queryClient.invalidateQueries({ queryKey: ['companies'] }) // Example
@@ -27,7 +24,7 @@ export const useCompanyRegisterMutation = () => {
     onError: (error) => {
       console.error('Failed to register company:', error)
       const errorMessage = error?.message || 'Company registration failed.'
-      alert(`Registration failed: ${errorMessage}`)
+      throw new Error(errorMessage)
     },
   })
 }
