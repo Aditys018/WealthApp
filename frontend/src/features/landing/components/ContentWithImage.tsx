@@ -1,5 +1,6 @@
 import { Button } from '@/components/ui/button'
 import { cn } from '@/lib/utils'
+import { useNavigate } from '@tanstack/react-router'
 import React from 'react'
 
 interface IContentWithImageProps {
@@ -27,9 +28,10 @@ export function ContentWithImage({
   onSecondaryClick,
   imagePosition = 'right',
   className,
-  showGetStartedButton = false, // <-- Default to false
+  showGetStartedButton = false,
 }: IContentWithImageProps) {
   const isLeft = imagePosition === 'left'
+  const navigate = useNavigate()
 
   return (
     <section
@@ -59,21 +61,21 @@ export function ContentWithImage({
               {typeof description === 'string' ? <p>{description}</p> : description}
             </div>
 
-            {/* Get Started Button (custom, below description) */}
+            {/* Get Started Button */}
             {showGetStartedButton && (
               <div className="flex justify-start mb-8">
                 <Button
                   variant="ghost"
                   size="lg"
                   className="!bg-[#FF9500] hover:!bg-[#ffb84d] text-black font-bold px-10 py-6 rounded-lg text-xl shadow-lg hover:shadow-xl transition-all duration-300"
-                  onClick={() => window.location.href = '/register'}
+                  onClick={() => navigate({ to: '/register' })}
                 >
                   Get Started
                 </Button>
               </div>
             )}
 
-            {/* Buttons */}
+            {/* Primary/Secondary Buttons */}
             {(primaryButtonText || secondaryButtonText) && (
               <div className="flex flex-col sm:flex-row gap-4 mt-4 sm:justify-start">
                 {primaryButtonText && (

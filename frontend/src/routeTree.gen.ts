@@ -12,6 +12,7 @@
 
 import { Route as rootRoute } from './routes/__root'
 import { Route as MapsImport } from './routes/maps'
+import { Route as RegisterImport } from './routes/register'
 import { Route as IndexImport } from './routes/index'
 import { Route as DemoTanstackQueryImport } from './routes/demo.tanstack-query'
 
@@ -20,6 +21,11 @@ import { Route as DemoTanstackQueryImport } from './routes/demo.tanstack-query'
 const MapsRoute = MapsImport.update({
   id: '/maps',
   path: '/maps',
+  getParentRoute: () => rootRoute,
+} as any)
+const RegisterRoute = RegisterImport.update({
+  id: '/register',
+  path: '/register',
   getParentRoute: () => rootRoute,
 } as any)
 
@@ -40,24 +46,30 @@ const DemoTanstackQueryRoute = DemoTanstackQueryImport.update({
 declare module '@tanstack/react-router' {
   interface FileRoutesByPath {
     '/': {
-      id: '/'
-      path: '/'
-      fullPath: '/'
-      preLoaderRoute: typeof IndexImport
+      id: '/',
+      path: '/',
+      fullPath: '/',
+      preLoaderRoute: typeof IndexImport,
       parentRoute: typeof rootRoute
-    }
+    },
     '/maps': {
-      id: '/maps'
-      path: '/maps'
-      fullPath: '/maps'
+      id: '/maps',
+      path: '/maps',
+      fullPath: '/maps',
       preLoaderRoute: typeof MapsImport
+    },
+    '/register': {
+      id: '/register',
+      path: '/register',
+      fullPath: '/register',
+      preLoaderRoute: typeof RegisterImport,
       parentRoute: typeof rootRoute
     }
     '/demo/tanstack-query': {
-      id: '/demo/tanstack-query'
-      path: '/demo/tanstack-query'
-      fullPath: '/demo/tanstack-query'
-      preLoaderRoute: typeof DemoTanstackQueryImport
+      id: '/demo/tanstack-query',
+      path: '/demo/tanstack-query',
+      fullPath: '/demo/tanstack-query',
+      preLoaderRoute: typeof DemoTanstackQueryImport,
       parentRoute: typeof rootRoute
     }
   }
@@ -68,12 +80,14 @@ declare module '@tanstack/react-router' {
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
   '/maps': typeof MapsRoute
+  '/register': typeof RegisterRoute
   '/demo/tanstack-query': typeof DemoTanstackQueryRoute
 }
 
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
   '/maps': typeof MapsRoute
+  '/register': typeof RegisterRoute
   '/demo/tanstack-query': typeof DemoTanstackQueryRoute
 }
 
@@ -81,6 +95,7 @@ export interface FileRoutesById {
   __root__: typeof rootRoute
   '/': typeof IndexRoute
   '/maps': typeof MapsRoute
+  '/register': typeof RegisterRoute
   '/demo/tanstack-query': typeof DemoTanstackQueryRoute
 }
 
@@ -90,18 +105,24 @@ export interface FileRouteTypes {
   fileRoutesByTo: FileRoutesByTo
   to: '/' | '/maps' | '/demo/tanstack-query'
   id: '__root__' | '/' | '/maps' | '/demo/tanstack-query'
+  fullPaths: '/' | '/register' | '/demo/tanstack-query'
+  fileRoutesByTo: FileRoutesByTo
+  to: '/' | '/register' | '/demo/tanstack-query'
+  id: '__root__' | '/' | '/register' | '/demo/tanstack-query'
   fileRoutesById: FileRoutesById
 }
 
 export interface RootRouteChildren {
   IndexRoute: typeof IndexRoute
   MapsRoute: typeof MapsRoute
+  RegisterRoute: typeof RegisterRoute
   DemoTanstackQueryRoute: typeof DemoTanstackQueryRoute
 }
 
 const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
   MapsRoute: MapsRoute,
+  RegisterRoute: RegisterRoute,
   DemoTanstackQueryRoute: DemoTanstackQueryRoute,
 }
 
@@ -117,6 +138,7 @@ export const routeTree = rootRoute
       "children": [
         "/",
         "/maps",
+        "/register",
         "/demo/tanstack-query"
       ]
     },
@@ -125,6 +147,8 @@ export const routeTree = rootRoute
     },
     "/maps": {
       "filePath": "maps.tsx"
+    "/register": {
+      "filePath": "register.tsx"
     },
     "/demo/tanstack-query": {
       "filePath": "demo.tanstack-query.tsx"
