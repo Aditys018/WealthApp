@@ -39,8 +39,6 @@ const {
 	updateUserProfile,
 	getUserProfile,
 	uploadImages,
-	getPublicUserProfile,
-	generateAndStoreDescription,
 	verifyLoginOTP,
 	resendOTP,
 } = require("../controller");
