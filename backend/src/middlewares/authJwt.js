@@ -1,13 +1,12 @@
-import { Request, Response, NextFunction } from "express";
-import jwt from "jsonwebtoken";
-import { DecodedToken, ILoginRequestBody } from "../types";
+const jwt = require("jsonwebtoken");
 
-export const checkRole = (allowedRoles: string[]) => {
-  return (
-    req: Request<{}, {}, ILoginRequestBody>,
-    res: Response,
-    next: NextFunction
-  ) => {
+/**
+ * Middleware to check if the user has the required role
+ * @param {string[]} allowedRoles Array of allowed roles
+ * @returns {Function} Express middleware function
+ */
+const checkRole = (allowedRoles) => {
+  return (req, res, next) => {
     const authHeader = req.headers.authorization;
     if (!authHeader || !authHeader.startsWith("Bearer ")) {
       return res.status(401).json({ message: "Unauthorized" });
@@ -15,10 +14,7 @@ export const checkRole = (allowedRoles: string[]) => {
 
     const token = authHeader.split(" ")[1];
     try {
-      const decoded = jwt.verify(
-        token,
-        process.env.JWT_TOKEN_SECRET as string
-      ) as DecodedToken;
+      const decoded = jwt.verify(token, process.env.JWT_TOKEN_SECRET);
 
       const hasRole = decoded.permissions.some((role) =>
         allowedRoles.includes(role)
@@ -39,3 +35,5 @@ export const checkRole = (allowedRoles: string[]) => {
     }
   };
 };
+
+module.exports = { checkRole };
