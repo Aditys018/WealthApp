@@ -5,6 +5,4 @@ export const Route = createFileRoute('/employeeinvitation')({
   component: EmployeeInvitation,
 })
 
-function RouteComponent() {
-  return <div>Hello "/employeeinvitation"!</div>
-}
+
