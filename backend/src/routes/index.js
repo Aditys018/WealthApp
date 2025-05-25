@@ -4,6 +4,7 @@ const userRoutes = require("./user.route");
 const identityRoutes = require("./identity.route");
 const companyRoutes = require("./company.route");
 const employeeRoutes = require("./employee.route");
+const placesRoutes = require("./places.route");
 
 const router = Router();
 
@@ -12,5 +13,6 @@ router.use("/user/", userRoutes);
 router.use("/identity/", identityRoutes);
 router.use("/companies/", companyRoutes);
 router.use("/employee/", employeeRoutes);
+router.use("/places/", placesRoutes);
 
 module.exports = router;

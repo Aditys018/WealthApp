@@ -12,6 +12,7 @@
 
 import { Route as rootRoute } from './routes/__root'
 import { Route as RegisterImport } from './routes/register'
+import { Route as MapsImport } from './routes/maps'
 import { Route as EmployeeinvitationImport } from './routes/employeeinvitation'
 import { Route as AdmindashboardImport } from './routes/admindashboard'
 import { Route as IndexImport } from './routes/index'
@@ -22,6 +23,12 @@ import { Route as DemoTanstackQueryImport } from './routes/demo.tanstack-query'
 const RegisterRoute = RegisterImport.update({
   id: '/register',
   path: '/register',
+  getParentRoute: () => rootRoute,
+} as any)
+
+const MapsRoute = MapsImport.update({
+  id: '/maps',
+  path: '/maps',
   getParentRoute: () => rootRoute,
 } as any)
 
@@ -74,6 +81,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof EmployeeinvitationImport
       parentRoute: typeof rootRoute
     }
+    '/maps': {
+      id: '/maps'
+      path: '/maps'
+      fullPath: '/maps'
+      preLoaderRoute: typeof MapsImport
+      parentRoute: typeof rootRoute
+    }
     '/register': {
       id: '/register'
       path: '/register'
@@ -97,6 +111,7 @@ export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
   '/admindashboard': typeof AdmindashboardRoute
   '/employeeinvitation': typeof EmployeeinvitationRoute
+  '/maps': typeof MapsRoute
   '/register': typeof RegisterRoute
   '/demo/tanstack-query': typeof DemoTanstackQueryRoute
 }
@@ -105,6 +120,7 @@ export interface FileRoutesByTo {
   '/': typeof IndexRoute
   '/admindashboard': typeof AdmindashboardRoute
   '/employeeinvitation': typeof EmployeeinvitationRoute
+  '/maps': typeof MapsRoute
   '/register': typeof RegisterRoute
   '/demo/tanstack-query': typeof DemoTanstackQueryRoute
 }
@@ -114,6 +130,7 @@ export interface FileRoutesById {
   '/': typeof IndexRoute
   '/admindashboard': typeof AdmindashboardRoute
   '/employeeinvitation': typeof EmployeeinvitationRoute
+  '/maps': typeof MapsRoute
   '/register': typeof RegisterRoute
   '/demo/tanstack-query': typeof DemoTanstackQueryRoute
 }
@@ -124,6 +141,7 @@ export interface FileRouteTypes {
     | '/'
     | '/admindashboard'
     | '/employeeinvitation'
+    | '/maps'
     | '/register'
     | '/demo/tanstack-query'
   fileRoutesByTo: FileRoutesByTo
@@ -131,6 +149,7 @@ export interface FileRouteTypes {
     | '/'
     | '/admindashboard'
     | '/employeeinvitation'
+    | '/maps'
     | '/register'
     | '/demo/tanstack-query'
   id:
@@ -138,6 +157,7 @@ export interface FileRouteTypes {
     | '/'
     | '/admindashboard'
     | '/employeeinvitation'
+    | '/maps'
     | '/register'
     | '/demo/tanstack-query'
   fileRoutesById: FileRoutesById
@@ -147,6 +167,7 @@ export interface RootRouteChildren {
   IndexRoute: typeof IndexRoute
   AdmindashboardRoute: typeof AdmindashboardRoute
   EmployeeinvitationRoute: typeof EmployeeinvitationRoute
+  MapsRoute: typeof MapsRoute
   RegisterRoute: typeof RegisterRoute
   DemoTanstackQueryRoute: typeof DemoTanstackQueryRoute
 }
@@ -155,6 +176,7 @@ const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
   AdmindashboardRoute: AdmindashboardRoute,
   EmployeeinvitationRoute: EmployeeinvitationRoute,
+  MapsRoute: MapsRoute,
   RegisterRoute: RegisterRoute,
   DemoTanstackQueryRoute: DemoTanstackQueryRoute,
 }
@@ -172,6 +194,7 @@ export const routeTree = rootRoute
         "/",
         "/admindashboard",
         "/employeeinvitation",
+        "/maps",
         "/register",
         "/demo/tanstack-query"
       ]
@@ -184,6 +207,9 @@ export const routeTree = rootRoute
     },
     "/employeeinvitation": {
       "filePath": "employeeinvitation.tsx"
+    },
+    "/maps": {
+      "filePath": "maps.tsx"
     },
     "/register": {
       "filePath": "register.tsx"
