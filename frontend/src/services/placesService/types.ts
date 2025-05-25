@@ -1,8 +1,8 @@
 export interface IPlacesListPayload {
   page: number
   pageSize: number
-  latitude?: number
-  longitude?: number
+  lat?: number
+  long?: number
   radius?: number
   propertyType?: string
 }

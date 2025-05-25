@@ -7,7 +7,6 @@ var router = (0, express_1.Router)();
 // Employee onboarding routes - accessible to employees and company admins
 var employeeRoles = ["EMPLOYEE", "COMPANY_ADMIN"];
 // Password management
-router.post("/change-password", (0, middlewares_1.checkRole)(employeeRoles), employee_controller_1.changePassword);
 // // Multi-factor authentication
 // router.post("/mfa/setup", checkRole(employeeRoles), setupMFA);
 // // Terms of service

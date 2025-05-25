@@ -6,70 +6,6 @@ const { validatePasswordComprehensive } = require("../utility/passwordUtility");
 const { createAndSendOTP } = require("../utility/mailUtility");
 
 /**
- * Change password for an employee (required on first login)
- * @param {Object} req
- * @param {Object} res
- */
-const changePassword = async (req, res) => {
-  try {
-    const userId = "req?.user?.id";
-    const { currentPassword, newPassword } = req.body;
-
-    // Validate request body
-    const schema = joi.object({
-      currentPassword: joi.string().required(),
-      newPassword: joi.string().required(),
-    });
-
-    const { error } = schema.validate(req.body);
-    if (error) {
-      return res.status(400).json({ message: error.details[0].message });
-    }
-
-    // Find the user
-    const user = await UserProfile.findById(userId);
-    if (!user) {
-      return res.status(404).json({ message: "User not found" });
-    }
-
-    // Verify current password
-    const isPasswordValid = await bcrypt.compare(
-      currentPassword,
-      user.password
-    );
-    if (!isPasswordValid) {
-      return res.status(401).json({ message: "Current password is incorrect" });
-    }
-
-    // Validate new password
-    const passwordValidation = validatePasswordComprehensive(newPassword);
-    if (!passwordValidation.isValid) {
-      return res.status(400).json({ message: passwordValidation.message });
-    }
-
-    // Hash new password
-    const hashedPassword = await bcrypt.hash(newPassword, 10);
-
-    // Update user's password and reset requirement flag
-    user.password = hashedPassword;
-    user.passwordResetRequired = false;
-    await user.save();
-
-    return res.status(200).json({
-      message: "Password changed successfully",
-      data: {
-        passwordResetRequired: false,
-      },
-    });
-  } catch (error) {
-    console.error("Error changing password:", error);
-    return res
-      .status(500)
-      .json({ message: "Error changing password", error: error.message });
-  }
-};
-
-/**
  * Setup multi-factor authentication for an employee
  * @param {Object} req
  * @param {Object} res
@@ -379,7 +315,6 @@ const getOnboardingStatus = async (req, res) => {
 };
 
 module.exports = {
-  changePassword,
   setupMFA,
   acceptTermsOfService,
   updateTutorialProgress,
