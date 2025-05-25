@@ -12,5 +12,6 @@ router.use("/user/", userRoutes);
 router.use("/identity/", identityRoutes);
 router.use("/companies/", companyRoutes);
 router.use("/employee/", employeeRoutes);
+router.use("/salestrend" , salestrendRoutes);
 
 module.exports = router;
