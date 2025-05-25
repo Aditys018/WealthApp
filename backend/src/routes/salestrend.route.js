@@ -1,6 +1,6 @@
 // routes/salesTrendRoutes.js
 const Router = require("express").Router;
-const { getSalesTrend } = require("../controller/salesTrendController");
+const { getSalesTrend } = require("../controller");
 
 const router = Router();
 
