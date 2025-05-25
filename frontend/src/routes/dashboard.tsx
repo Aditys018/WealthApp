@@ -5,12 +5,11 @@ import { createFileRoute, redirect } from '@tanstack/react-router'
 export const Route = createFileRoute('/dashboard')({
   beforeLoad: () => {
     const user = JSON.parse(localStorage.getItem('user') || 'null')
+    console.log('User::::🔴🔴🔴', user)
 
-    if (!user || user.role !== 'ADMIN') {
-      throw redirect({ to: '/maps' })
-    }
+    const allowedRoles = ['ADMIN', 'COMPANY_ADMIN']
 
-    if (!user || user.role !== 'COMPANY_ADMIN') {
+    if (!user || !allowedRoles.includes(user.role)) {
       throw redirect({ to: '/maps' })
     }
   },
