@@ -176,6 +176,7 @@ const propertyDetails = async (req, res) => {
       coolingType: utilities.coolingType || "N/A",
       ownerInfo,
       salesHistory,
+      assessmentHistory,
     };
 
     res.status(200).json({
