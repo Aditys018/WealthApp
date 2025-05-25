@@ -1,6 +1,6 @@
-const express = require("express");
-const axios = require("axios");
 
+const axios = require("axios");
+const { PropertyType } = require("../model");
 // Replace with your actual ATTOM API key
 const ATTOM_API_KEY = "283129a21a7f8361fee7404e88463f15";
 
@@ -193,7 +193,32 @@ const propertyDetails = async (req, res) => {
   }
 };
 
+/**
+ * Get all property types 
+ */
+const getPropertyTypes = async (req, res) => {
+  try {
+    const propertyTypes = await PropertyType.find();
+    console.log("Fetched property types:", propertyTypes);
+    if (!propertyTypes || propertyTypes.length === 0) {
+      return res.status(404).json({
+        message: "No property types found",
+        status: false,
+      });
+    }
+    res.status(200).json({
+      message: "Property types fetched successfully",
+      status: true,
+      data: propertyTypes,
+    });
+  } catch (error) {
+    console.error("Error fetching property types:", error.message);
+    res.status(500).json({ error: "Failed to fetch property types" });
+  }
+}
+
 module.exports = {
   propertyList,
-  propertyDetails
+  propertyDetails,
+  getPropertyTypes
 };

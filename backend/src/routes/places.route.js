@@ -1,8 +1,10 @@
 const Router = require("express").Router;
 const {
     propertyList,
-    propertyDetails
+    propertyDetails,
+    getPropertyTypes
 } = require("../controller");
+const { route } = require("./identity.route");
 
 const router = Router();
 
@@ -12,5 +14,6 @@ const router = Router();
 
 router.get("/list-properties", propertyList);
 router.get("/property/:id", propertyDetails); // Assuming you want to get a specific property by ID
+router.get("/property-types", getPropertyTypes);
 
 module.exports = router;
