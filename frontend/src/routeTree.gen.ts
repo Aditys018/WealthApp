@@ -14,6 +14,7 @@ import { Route as rootRoute } from './routes/__root'
 import { Route as RegisterImport } from './routes/register'
 import { Route as MapsImport } from './routes/maps'
 import { Route as IndexImport } from './routes/index'
+import { Route as DetailsIdImport } from './routes/details/$id'
 import { Route as DemoTanstackQueryImport } from './routes/demo.tanstack-query'
 
 // Create/Update Routes
@@ -33,6 +34,12 @@ const MapsRoute = MapsImport.update({
 const IndexRoute = IndexImport.update({
   id: '/',
   path: '/',
+  getParentRoute: () => rootRoute,
+} as any)
+
+const DetailsIdRoute = DetailsIdImport.update({
+  id: '/details/$id',
+  path: '/details/$id',
   getParentRoute: () => rootRoute,
 } as any)
 
@@ -74,6 +81,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof DemoTanstackQueryImport
       parentRoute: typeof rootRoute
     }
+    '/details/$id': {
+      id: '/details/$id'
+      path: '/details/$id'
+      fullPath: '/details/$id'
+      preLoaderRoute: typeof DetailsIdImport
+      parentRoute: typeof rootRoute
+    }
   }
 }
 
@@ -84,6 +98,7 @@ export interface FileRoutesByFullPath {
   '/maps': typeof MapsRoute
   '/register': typeof RegisterRoute
   '/demo/tanstack-query': typeof DemoTanstackQueryRoute
+  '/details/$id': typeof DetailsIdRoute
 }
 
 export interface FileRoutesByTo {
@@ -91,6 +106,7 @@ export interface FileRoutesByTo {
   '/maps': typeof MapsRoute
   '/register': typeof RegisterRoute
   '/demo/tanstack-query': typeof DemoTanstackQueryRoute
+  '/details/$id': typeof DetailsIdRoute
 }
 
 export interface FileRoutesById {
@@ -99,14 +115,26 @@ export interface FileRoutesById {
   '/maps': typeof MapsRoute
   '/register': typeof RegisterRoute
   '/demo/tanstack-query': typeof DemoTanstackQueryRoute
+  '/details/$id': typeof DetailsIdRoute
 }
 
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
-  fullPaths: '/' | '/maps' | '/register' | '/demo/tanstack-query'
+  fullPaths:
+    | '/'
+    | '/maps'
+    | '/register'
+    | '/demo/tanstack-query'
+    | '/details/$id'
   fileRoutesByTo: FileRoutesByTo
-  to: '/' | '/maps' | '/register' | '/demo/tanstack-query'
-  id: '__root__' | '/' | '/maps' | '/register' | '/demo/tanstack-query'
+  to: '/' | '/maps' | '/register' | '/demo/tanstack-query' | '/details/$id'
+  id:
+    | '__root__'
+    | '/'
+    | '/maps'
+    | '/register'
+    | '/demo/tanstack-query'
+    | '/details/$id'
   fileRoutesById: FileRoutesById
 }
 
@@ -115,6 +143,7 @@ export interface RootRouteChildren {
   MapsRoute: typeof MapsRoute
   RegisterRoute: typeof RegisterRoute
   DemoTanstackQueryRoute: typeof DemoTanstackQueryRoute
+  DetailsIdRoute: typeof DetailsIdRoute
 }
 
 const rootRouteChildren: RootRouteChildren = {
@@ -122,6 +151,7 @@ const rootRouteChildren: RootRouteChildren = {
   MapsRoute: MapsRoute,
   RegisterRoute: RegisterRoute,
   DemoTanstackQueryRoute: DemoTanstackQueryRoute,
+  DetailsIdRoute: DetailsIdRoute,
 }
 
 export const routeTree = rootRoute
@@ -137,7 +167,8 @@ export const routeTree = rootRoute
         "/",
         "/maps",
         "/register",
-        "/demo/tanstack-query"
+        "/demo/tanstack-query",
+        "/details/$id"
       ]
     },
     "/": {
@@ -151,6 +182,9 @@ export const routeTree = rootRoute
     },
     "/demo/tanstack-query": {
       "filePath": "demo.tanstack-query.tsx"
+    },
+    "/details/$id": {
+      "filePath": "details/$id.tsx"
     }
   }
 }
