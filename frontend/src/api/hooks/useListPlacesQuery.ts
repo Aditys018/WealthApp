@@ -6,9 +6,10 @@ import {
 } from '../../services'
 import { AxiosError } from 'axios'
 
-export const useListPlacesQuery = () => {
+export const useListPlacesQuery = (query: IPlacesListPayload) => {
+  const queryKey = ['listPlaces', query]
   return useQuery({
-    queryKey: ['listPlaces'],
-    queryFn: placesService.listProperties,
+    queryKey,
+    queryFn: () => placesService.listProperties(query),
   })
 }

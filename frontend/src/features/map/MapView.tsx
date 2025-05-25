@@ -13,7 +13,6 @@ import { useListPlacesQuery } from '@/api'
 
 // Sample property data
 
-
 // Map container style
 const containerStyle = {
   width: '100%',
@@ -23,8 +22,8 @@ const containerStyle = {
 
 // Default center (Times Square, NYC)
 const center = {
-  lat: 40.75777236287542,
-  lng: -73.9847073722187,
+  lat: 36.778259,
+  lng: -119.417931,
 }
 
 // Map options for better UX
@@ -143,7 +142,14 @@ const options = {
 const PropertyMap = ({ googleApiKey }) => {
   const [selectedProperty, setSelectedProperty] = useState(null)
   const [map, setMap] = useState(null)
-  const { data, isError, isLoading } = useListPlacesQuery()
+  const [mapCenter, setMapCenter] = useState(center)
+  const { data, isError, isLoading } = useListPlacesQuery({
+    lat: mapCenter.lat,
+    long: mapCenter.lng,
+    radius: 5, // 5 km radius
+    page: 1,
+    pageSize: 20,
+  })
 
   const onLoad = useCallback((map) => {
     setMap(map)
@@ -198,6 +204,7 @@ const PropertyMap = ({ googleApiKey }) => {
     if (map) {
       console.log('Map is idle, fetching center and bounds...')
       const center = map.getCenter()
+      setMapCenter(center.toJSON())
       const bounds = map.getBounds()
 
       const zoom = map.getZoom()
@@ -245,7 +252,6 @@ const PropertyMap = ({ googleApiKey }) => {
       <LoadScript
         libraries={['geometry']}
         googleMapsApiKey="AIzaSyCOTKgJdgCv_nu989DjZjpej0pv9dLBfs4"
-      
       >
         <GoogleMap
           ref={googleMapsRef}
@@ -258,7 +264,6 @@ const PropertyMap = ({ googleApiKey }) => {
           onUnmount={onUnmount}
           options={options}
           onIdle={handleMapIdle}
-          
         >
           {data?.data.map((property) => (
             <Marker
@@ -345,7 +350,7 @@ const PropertyMap = ({ googleApiKey }) => {
       </LoadScript>
 
       {/* Property list sidebar */}
-    {/*  */}
+      {/*  */}
     </div>
   )
 }
