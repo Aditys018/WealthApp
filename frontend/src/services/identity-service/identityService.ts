@@ -7,6 +7,7 @@ export const identityService = {
       const response = await axiosClient.post<ISendOtpResponse>(
         sendOTPUrl,
         payload,
+        { isPublic: true },
       )
 
       return response.data

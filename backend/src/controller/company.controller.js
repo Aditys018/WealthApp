@@ -274,7 +274,7 @@ const inviteEmployee = async (req, res) => {
   try {
     const { companyId } = req.params;
     const { email, role, firstName, lastName } = req.body;
-  const adminId = req.user.id;
+    const adminId = req.user.id;
 
     // Validate input
     if (!email || !role) {
@@ -285,13 +285,6 @@ const inviteEmployee = async (req, res) => {
     const company = await Company.findById(companyId);
     if (!company) {
       return res.status(404).json({ message: "Company not found" });
-    }
-
-    // Check if the admin is authorized to invite employees to this company
-    if (company.admin.toString() !== adminId) {
-      return res
-        .status(403)
-        .json({ message: "Unauthorized access to company" });
     }
 
     // Check if the user already exists
@@ -475,20 +468,20 @@ const getCompanyEmployees = async (req, res) => {
     }
 
     // Check if the admin is authorized to view this company's employees
-    if (company.admin.toString() !== adminId) {
-      return res
-        .status(403)
-        .json({ message: "Unauthorized access to company" });
-    }
+    // if (company.admin.toString() !== adminId) {
+    //   return res
+    //     .status(403)
+    //     .json({ message: "Unauthorized access to company" });
+    // }
 
     // Get all employees
     const employees = await UserProfile.find(
       { "company.companyId": companyId },
       {
-        "firstName": 1,
-        "lastName": 1,
-        "email": 1,
-        "role": 1,
+        firstName: 1,
+        lastName: 1,
+        email: 1,
+        role: 1,
         "company.department": 1,
         "company.position": 1,
         "company.permissions": 1,

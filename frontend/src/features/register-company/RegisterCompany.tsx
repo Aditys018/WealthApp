@@ -5,7 +5,7 @@ import {
 } from '@/api'
 import { useNavigate } from '@tanstack/react-router'
 import { useEffect, useState } from 'react'
-import { useForm } from 'react-hook-form'; // No need for Controller or zodResolver now
+import { useForm } from 'react-hook-form' // No need for Controller or zodResolver now
 import { toast } from 'sonner'
 
 // Import your custom hooks and types
@@ -153,6 +153,7 @@ export function RegisterCompany() {
           toast.success(data.message)
           // Navigate to employee invitation page after successful registration
           navigate({ to: '/employeeinvitation' })
+          navigate({ to: '/login' })
         },
         onError: (error) => {
           toast.error(error.message)

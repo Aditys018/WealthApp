@@ -37,12 +37,12 @@ if (rootElement && !rootElement.innerHTML) {
   const root = ReactDOM.createRoot(rootElement)
   root.render(
     <StrictMode>
-      <TanStackQueryProvider.Provider>
-        <AuthProvider>
+      <AuthProvider>
+        <TanStackQueryProvider.Provider>
           <RouterProvider router={router} />
           <Toaster position="top-right" richColors />
-        </AuthProvider>
-      </TanStackQueryProvider.Provider>
+        </TanStackQueryProvider.Provider>
+      </AuthProvider>
     </StrictMode>,
   )
 }

@@ -19,10 +19,9 @@ export const Route = createRootRouteWithContext<MyRouterContext>()({
     const currentPath = router.state.location.pathname
 
     // Show only logo header on these pages
-    const showOnlyLogoHeader = [
-      '/contentwithimages',
-      '/registercompany',
-    ].includes(currentPath)
+    const showOnlyLogoHeader = ['/', '/login', '/register'].includes(
+      currentPath,
+    )
 
     return (
       <>

@@ -21,3 +21,17 @@ export interface IRegisterCompanyResponse {
   message: string
   status: boolean
 }
+
+export interface IEmployeeInvitePayload {
+  email: string
+  role: 'EMPLOYEE' | 'ADMIN'
+  firstName: string
+  lastName: string
+  companyId: string
+}
+
+export interface IEmployeeInviteResponse {
+  data: any
+  message: string
+  status: boolean
+}

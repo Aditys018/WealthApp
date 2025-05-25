@@ -23,6 +23,7 @@ export const userService = {
           headers: {
             'Content-Type': 'multipart/form-data',
           },
+          isPublic: true,
         },
       )
 
@@ -48,6 +49,9 @@ export const userService = {
       const response = await axiosClient.post<IVerifyLoginOtpResponse>(
         verifyOtpUrl,
         payload,
+        {
+          isPublic: true,
+        },
       )
 
       return response.data

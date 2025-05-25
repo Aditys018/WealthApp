@@ -6,7 +6,7 @@ interface HeaderProps {
   showNavbar?: boolean
 }
 
-export function Header({ showNavbar = true }: HeaderProps) {
+export function Header({ showNavbar = false }: HeaderProps) {
   const [isScrolled, setIsScrolled] = useState(false)
 
   useEffect(() => {
