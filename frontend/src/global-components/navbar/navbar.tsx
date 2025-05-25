@@ -6,20 +6,22 @@ export const Navbar = () => {
   const [activeSection, setActiveSection] = useState('dashboard')
 
   const navItems = [
+   
     {
       label: 'DASHBOARD',
       path: '/admindashboard',
       
     },
-    {
-      label: 'TEAMS',
-      path: '/teams',
-     
-    },
+    
     {
       label: 'PROPERTIES',
       path: '/properties',
       
+    },
+     {
+      label: 'PROFILE',
+      path: '/profile',
+     
     },
    
   ]
