@@ -9,6 +9,10 @@ export const AdminDashboard = () => {
     navigate({ to: '/invite' })
   }
 
+  const handleManageEmployees = () => {
+    navigate({ to: '/list' })
+  }
+
   const dashboardItems = [
     {
       title: 'Invite Employee',
@@ -19,7 +23,7 @@ export const AdminDashboard = () => {
     {
       title: 'Manage Employees',
       description: 'View and manage employee accounts',
-      action: () => toast.info('Coming soon'),
+      action: handleManageEmployees,
       icon: <MdPerson className="w-15 h-15 text-[#ff9500]" />,
     },
     {
