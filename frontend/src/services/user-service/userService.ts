@@ -1,9 +1,17 @@
-import { axiosClient, imageUploadUrl, loginUrl, verifyOtpUrl } from '@/api'
+import {
+  axiosClient,
+  imageUploadUrl,
+  loginUrl,
+  resetPasswordUrl,
+  verifyOtpUrl,
+} from '@/api'
 import {
   ILoginPayload,
   ILoginResponse,
   ILogoUploadPayload,
   ILogoUploadResponse,
+  IResetPasswordPayload,
+  IResetPasswordResponse,
   IVerifyLoginOtpPayload,
   IVerifyLoginOtpResponse,
 } from './types'
@@ -57,6 +65,20 @@ export const userService = {
       return response.data
     } catch (error) {
       console.error('Error verifying login OTP:', error)
+      throw error
+    }
+  },
+  resetPassword: async (
+    payload: IResetPasswordPayload,
+  ): Promise<IResetPasswordResponse> => {
+    try {
+      const res = await axiosClient.post<IResetPasswordResponse>(
+        resetPasswordUrl,
+        payload,
+      )
+
+      return res.data
+    } catch (error) {
       throw error
     }
   },

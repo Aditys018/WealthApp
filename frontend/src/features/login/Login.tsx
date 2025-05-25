@@ -71,7 +71,16 @@ export function Login() {
         onSuccess: (res) => {
           toast.success(res.message)
           login(res.data.user, res.data.tokens)
-          navigate({ to: '/dashboard', replace: true })
+          if (res.data.user.passwordResetRequired) {
+            navigate({ to: '/reset', replace: true })
+          } else if (
+            res.data.user.role === 'ADMIN' ||
+            res.data.user.role === 'COMPANY_ADMIN'
+          ) {
+            navigate({ to: '/dashboard', replace: true })
+          } else {
+            navigate({ to: '/maps', replace: true })
+          }
         },
       },
     )

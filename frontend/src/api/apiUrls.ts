@@ -16,3 +16,5 @@ export const getCompanyEmployeesListUrl = (companyId: string) =>
 export const inviteEmployeeUrl = (companyId: string) => {
   return `/companies/${companyId}/employees/invite`
 }
+
+export const resetPasswordUrl = '/user/change-password'

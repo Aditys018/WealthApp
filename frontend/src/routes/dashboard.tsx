@@ -1,8 +1,19 @@
 import { useCompanyEmployeesListQuery } from '@/api'
 import { AdminDashboard } from '@/features'
-import { createFileRoute } from '@tanstack/react-router'
+import { createFileRoute, redirect } from '@tanstack/react-router'
 
 export const Route = createFileRoute('/dashboard')({
+  beforeLoad: () => {
+    const user = JSON.parse(localStorage.getItem('user') || 'null')
+
+    if (!user || user.role !== 'ADMIN') {
+      throw redirect({ to: '/maps' })
+    }
+
+    if (!user || user.role !== 'COMPANY_ADMIN') {
+      throw redirect({ to: '/maps' })
+    }
+  },
   component: RouteComponent,
 })
 
