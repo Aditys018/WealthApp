@@ -1,35 +1,36 @@
+import { Header } from '@/global-components'
+import { Navbar } from '@/global-components/navbar/navbar'
+import type { QueryClient } from '@tanstack/react-query'
 import {
   Outlet,
   createRootRouteWithContext,
-  useLocation,
+  useRouter,
 } from '@tanstack/react-router'
 import { TanStackRouterDevtools } from '@tanstack/react-router-devtools'
 import TanStackQueryLayout from '../integrations/tanstack-query/layout.tsx'
-import type { QueryClient } from '@tanstack/react-query'
-import { Header } from '@/global-components'
 
 interface MyRouterContext {
   queryClient: QueryClient
 }
 
 export const Route = createRootRouteWithContext<MyRouterContext>()({
-  component: RootComponent,
+  component: () => {
+    const router = useRouter()
+    const currentPath = router.state.location.pathname
+
+    // Show only logo header on these pages
+    const showOnlyLogoHeader = [
+      '/contentwithimages',
+      '/registercompany',
+    ].includes(currentPath)
+
+    return (
+      <>
+        {showOnlyLogoHeader ? <Header /> : <Navbar />}
+        <Outlet />
+        <TanStackRouterDevtools />
+        <TanStackQueryLayout />
+      </>
+    )
+  },
 })
-
-function RootComponent() {
-  const location = useLocation()
-  const pathname = location.pathname
-
-  const hiddenHeaderPaths = ['/', '/register']
-  const shouldHideHeader = hiddenHeaderPaths.includes(pathname)
-
-  return (
-    <>
-      {!shouldHideHeader ? <Header /> : null}
-
-      <Outlet />
-      <TanStackRouterDevtools />
-      <TanStackQueryLayout />
-    </>
-  )
-}
