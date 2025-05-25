@@ -178,7 +178,7 @@ const PropertyMap = ({ googleApiKey }) => {
 
       // Pan and zoom to the selected place
       map?.panTo({ lat, lng })
-      map?.setZoom(15)
+      map?.setZoom(22)
     })
   }, [map])
 
