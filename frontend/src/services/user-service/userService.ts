@@ -1,5 +1,12 @@
-import { axiosClient, imageUploadUrl } from '@/api'
-import { ILogoUploadPayload, ILogoUploadResponse } from './types'
+import { axiosClient, imageUploadUrl, loginUrl, verifyOtpUrl } from '@/api'
+import {
+  ILoginPayload,
+  ILoginResponse,
+  ILogoUploadPayload,
+  ILogoUploadResponse,
+  IVerifyLoginOtpPayload,
+  IVerifyLoginOtpResponse,
+} from './types'
 
 export const userService = {
   uploadLogo: async (
@@ -23,6 +30,29 @@ export const userService = {
     } catch (error) {
       console.error('Error while uploading photo', error)
 
+      throw error
+    }
+  },
+  loginUser: async (payload: ILoginPayload): Promise<ILoginResponse> => {
+    try {
+      const response = await axiosClient.post<ILoginResponse>(loginUrl, payload)
+      return response.data
+    } catch (error) {
+      throw error
+    }
+  },
+  verifyLoginOtp: async (
+    payload: IVerifyLoginOtpPayload,
+  ): Promise<IVerifyLoginOtpResponse> => {
+    try {
+      const response = await axiosClient.post<IVerifyLoginOtpResponse>(
+        verifyOtpUrl,
+        payload,
+      )
+
+      return response.data
+    } catch (error) {
+      console.error('Error verifying login OTP:', error)
       throw error
     }
   },

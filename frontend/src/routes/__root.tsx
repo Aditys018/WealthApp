@@ -1,24 +1,36 @@
-import { Outlet, createRootRouteWithContext } from '@tanstack/react-router'
-import { TanStackRouterDevtools } from '@tanstack/react-router-devtools'
-
-import TanStackQueryLayout from '../integrations/tanstack-query/layout.tsx'
-
-import type { QueryClient } from '@tanstack/react-query'
 import { Header } from '@/global-components'
+import { Navbar } from '@/global-components/navbar/navbar'
+import type { QueryClient } from '@tanstack/react-query'
+import {
+  Outlet,
+  createRootRouteWithContext,
+  useRouter,
+} from '@tanstack/react-router'
+import { TanStackRouterDevtools } from '@tanstack/react-router-devtools'
+import TanStackQueryLayout from '../integrations/tanstack-query/layout.tsx'
 
 interface MyRouterContext {
   queryClient: QueryClient
 }
 
 export const Route = createRootRouteWithContext<MyRouterContext>()({
-  component: () => (
-    <>
-      <Header />
+  component: () => {
+    const router = useRouter()
+    const currentPath = router.state.location.pathname
 
-      <Outlet />
-      <TanStackRouterDevtools />
+    // Show only logo header on these pages
+    const showOnlyLogoHeader = [
+      '/contentwithimages',
+      '/registercompany',
+    ].includes(currentPath)
 
-      <TanStackQueryLayout />
-    </>
-  ),
+    return (
+      <>
+        {showOnlyLogoHeader ? <Header /> : <Navbar />}
+        <Outlet />
+        <TanStackRouterDevtools />
+        <TanStackQueryLayout />
+      </>
+    )
+  },
 })
