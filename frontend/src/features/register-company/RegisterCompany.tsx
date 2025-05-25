@@ -3,8 +3,9 @@ import {
   useImageUploadMutation,
   useSendOTPMutation,
 } from '@/api'
+import { useNavigate } from '@tanstack/react-router'
 import { useEffect, useState } from 'react'
-import { useForm } from 'react-hook-form' // No need for Controller or zodResolver now
+import { useForm } from 'react-hook-form'; // No need for Controller or zodResolver now
 import { toast } from 'sonner'
 
 // Import your custom hooks and types
@@ -60,6 +61,8 @@ export function RegisterCompany() {
     },
     mode: 'onTouched', // Validate on blur/change after first interaction
   })
+
+  const navigate = useNavigate()
 
   // Watch the logo field to create a preview URL
   const logoFile = watch('logo')
@@ -148,6 +151,8 @@ export function RegisterCompany() {
       {
         onSuccess: (data) => {
           toast.success(data.message)
+          // Navigate to employee invitation page after successful registration
+          navigate({ to: '/employeeinvitation' })
         },
         onError: (error) => {
           toast.error(error.message)

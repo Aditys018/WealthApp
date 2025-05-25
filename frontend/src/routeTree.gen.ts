@@ -13,6 +13,8 @@
 import { Route as rootRoute } from './routes/__root'
 import { Route as RegisterImport } from './routes/register'
 import { Route as MapsImport } from './routes/maps'
+import { Route as EmployeeinvitationImport } from './routes/employeeinvitation'
+import { Route as AdmindashboardImport } from './routes/admindashboard'
 import { Route as IndexImport } from './routes/index'
 import { Route as DemoTanstackQueryImport } from './routes/demo.tanstack-query'
 
@@ -27,6 +29,18 @@ const RegisterRoute = RegisterImport.update({
 const MapsRoute = MapsImport.update({
   id: '/maps',
   path: '/maps',
+  getParentRoute: () => rootRoute,
+} as any)
+
+const EmployeeinvitationRoute = EmployeeinvitationImport.update({
+  id: '/employeeinvitation',
+  path: '/employeeinvitation',
+  getParentRoute: () => rootRoute,
+} as any)
+
+const AdmindashboardRoute = AdmindashboardImport.update({
+  id: '/admindashboard',
+  path: '/admindashboard',
   getParentRoute: () => rootRoute,
 } as any)
 
@@ -51,6 +65,20 @@ declare module '@tanstack/react-router' {
       path: '/'
       fullPath: '/'
       preLoaderRoute: typeof IndexImport
+      parentRoute: typeof rootRoute
+    }
+    '/admindashboard': {
+      id: '/admindashboard'
+      path: '/admindashboard'
+      fullPath: '/admindashboard'
+      preLoaderRoute: typeof AdmindashboardImport
+      parentRoute: typeof rootRoute
+    }
+    '/employeeinvitation': {
+      id: '/employeeinvitation'
+      path: '/employeeinvitation'
+      fullPath: '/employeeinvitation'
+      preLoaderRoute: typeof EmployeeinvitationImport
       parentRoute: typeof rootRoute
     }
     '/maps': {
@@ -81,6 +109,8 @@ declare module '@tanstack/react-router' {
 
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
+  '/admindashboard': typeof AdmindashboardRoute
+  '/employeeinvitation': typeof EmployeeinvitationRoute
   '/maps': typeof MapsRoute
   '/register': typeof RegisterRoute
   '/demo/tanstack-query': typeof DemoTanstackQueryRoute
@@ -88,6 +118,8 @@ export interface FileRoutesByFullPath {
 
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
+  '/admindashboard': typeof AdmindashboardRoute
+  '/employeeinvitation': typeof EmployeeinvitationRoute
   '/maps': typeof MapsRoute
   '/register': typeof RegisterRoute
   '/demo/tanstack-query': typeof DemoTanstackQueryRoute
@@ -96,6 +128,8 @@ export interface FileRoutesByTo {
 export interface FileRoutesById {
   __root__: typeof rootRoute
   '/': typeof IndexRoute
+  '/admindashboard': typeof AdmindashboardRoute
+  '/employeeinvitation': typeof EmployeeinvitationRoute
   '/maps': typeof MapsRoute
   '/register': typeof RegisterRoute
   '/demo/tanstack-query': typeof DemoTanstackQueryRoute
@@ -103,15 +137,36 @@ export interface FileRoutesById {
 
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
-  fullPaths: '/' | '/maps' | '/register' | '/demo/tanstack-query'
+  fullPaths:
+    | '/'
+    | '/admindashboard'
+    | '/employeeinvitation'
+    | '/maps'
+    | '/register'
+    | '/demo/tanstack-query'
   fileRoutesByTo: FileRoutesByTo
-  to: '/' | '/maps' | '/register' | '/demo/tanstack-query'
-  id: '__root__' | '/' | '/maps' | '/register' | '/demo/tanstack-query'
+  to:
+    | '/'
+    | '/admindashboard'
+    | '/employeeinvitation'
+    | '/maps'
+    | '/register'
+    | '/demo/tanstack-query'
+  id:
+    | '__root__'
+    | '/'
+    | '/admindashboard'
+    | '/employeeinvitation'
+    | '/maps'
+    | '/register'
+    | '/demo/tanstack-query'
   fileRoutesById: FileRoutesById
 }
 
 export interface RootRouteChildren {
   IndexRoute: typeof IndexRoute
+  AdmindashboardRoute: typeof AdmindashboardRoute
+  EmployeeinvitationRoute: typeof EmployeeinvitationRoute
   MapsRoute: typeof MapsRoute
   RegisterRoute: typeof RegisterRoute
   DemoTanstackQueryRoute: typeof DemoTanstackQueryRoute
@@ -119,6 +174,8 @@ export interface RootRouteChildren {
 
 const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
+  AdmindashboardRoute: AdmindashboardRoute,
+  EmployeeinvitationRoute: EmployeeinvitationRoute,
   MapsRoute: MapsRoute,
   RegisterRoute: RegisterRoute,
   DemoTanstackQueryRoute: DemoTanstackQueryRoute,
@@ -135,6 +192,8 @@ export const routeTree = rootRoute
       "filePath": "__root.tsx",
       "children": [
         "/",
+        "/admindashboard",
+        "/employeeinvitation",
         "/maps",
         "/register",
         "/demo/tanstack-query"
@@ -142,6 +201,12 @@ export const routeTree = rootRoute
     },
     "/": {
       "filePath": "index.tsx"
+    },
+    "/admindashboard": {
+      "filePath": "admindashboard.tsx"
+    },
+    "/employeeinvitation": {
+      "filePath": "employeeinvitation.tsx"
     },
     "/maps": {
       "filePath": "maps.tsx"
