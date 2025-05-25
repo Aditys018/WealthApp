@@ -24,6 +24,7 @@ const checkRole = (allowedRoles) => {
           .status(403)
           .json({ message: "Forbidden: Insufficient permissions" });
       }
+      console.log("Decoded token:", decoded);
        // Append the decoded token to the request object
       req.user = {
         id: decoded.id,

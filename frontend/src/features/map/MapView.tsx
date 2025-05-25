@@ -1,4 +1,4 @@
-import React, { useState, useCallback, useRef } from 'react'
+import React, { useState, useCallback, useRef, useEffect } from 'react'
 import {
   GoogleMap,
   LoadScript,
@@ -13,7 +13,6 @@ import { useListPlacesQuery } from '@/api'
 
 // Sample property data
 
-
 // Map container style
 const containerStyle = {
   width: '100%',
@@ -23,8 +22,8 @@ const containerStyle = {
 
 // Default center (Times Square, NYC)
 const center = {
-  lat: 40.75777236287542,
-  lng: -73.9847073722187,
+  lat: 36.778259,
+  lng: -119.417931,
 }
 
 // Map options for better UX
@@ -143,11 +142,45 @@ const options = {
 const PropertyMap = ({ googleApiKey }) => {
   const [selectedProperty, setSelectedProperty] = useState(null)
   const [map, setMap] = useState(null)
-  const { data, isError, isLoading } = useListPlacesQuery()
+  const [mapCenter, setMapCenter] = useState(center)
+  const { data, isError, isLoading } = useListPlacesQuery({
+    lat: mapCenter.lat,
+    long: mapCenter.lng,
+    radius: 5, // 5 km radius
+    page: 1,
+    pageSize: 20,
+  })
 
   const onLoad = useCallback((map) => {
     setMap(map)
   }, [])
+
+  const inputRef = useRef(null)
+
+  const initAutocomplete = useCallback(() => {
+    if (!window.google || !inputRef.current) return
+
+    const autocomplete = new window.google.maps.places.Autocomplete(
+      inputRef.current,
+      {
+        fields: ['geometry'],
+        types: ['geocode'], // or 'establishment' depending on your use case
+      },
+    )
+
+    autocomplete.addListener('place_changed', () => {
+      const place = autocomplete.getPlace()
+      if (!place.geometry) return
+
+      const location = place.geometry.location
+      const lat = location?.lat()
+      const lng = location?.lng()
+
+      // Pan and zoom to the selected place
+      map?.panTo({ lat, lng })
+      map?.setZoom(22)
+    })
+  }, [map])
 
   const onUnmount = useCallback(() => {
     setMap(null)
@@ -198,6 +231,7 @@ const PropertyMap = ({ googleApiKey }) => {
     if (map) {
       console.log('Map is idle, fetching center and bounds...')
       const center = map.getCenter()
+      setMapCenter(center.toJSON())
       const bounds = map.getBounds()
 
       const zoom = map.getZoom()
@@ -240,13 +274,28 @@ const PropertyMap = ({ googleApiKey }) => {
     }
   }, [map])
 
+  useEffect(() => {
+    if (map) {
+      initAutocomplete()
+    }
+  }, [map, initAutocomplete])
+
   return (
     <div className="relative w-full h-full">
       <LoadScript
-        libraries={['geometry']}
+        libraries={['geometry', 'places']}
         googleMapsApiKey="AIzaSyCOTKgJdgCv_nu989DjZjpej0pv9dLBfs4"
-      
       >
+        <input
+          ref={inputRef}
+          id="search-box"
+          type="text"
+          placeholder="Search for a location..."
+          className="z-10 w-full p-2 rounded-md shadow-md
+           bg-white border border-gray-300 focus:outline-none focus:ring-2
+            focus:ring-gray-100"
+        />
+
         <GoogleMap
           ref={googleMapsRef}
           // onBoundsChanged={onBoundsChanged}
@@ -258,7 +307,6 @@ const PropertyMap = ({ googleApiKey }) => {
           onUnmount={onUnmount}
           options={options}
           onIdle={handleMapIdle}
-          
         >
           {data?.data.map((property) => (
             <Marker
@@ -345,7 +393,7 @@ const PropertyMap = ({ googleApiKey }) => {
       </LoadScript>
 
       {/* Property list sidebar */}
-    {/*  */}
+      {/*  */}
     </div>
   )
 }

@@ -9,119 +9,6 @@ const {
   verifyOTP,
 } = require("../utility/mailUtility");
 
-const registerSchema = Joi.object({
-  role: Joi.string().valid("USER", "FREE_USER").required().label("Role"),
-  email: Joi.string().email().required().label("Email"),
-  firstName: Joi.string().required().label("First Name"),
-  lastName: Joi.string().required().label("Last Name"),
-  gender: Joi.string().required().valid("Male", "Female").label("Gender"),
-  phoneNumber: Joi.string().required().label("Phone Number"),
-  //if role is USER then only these fields are required
-  invoiceNumbers: Joi.when("role", {
-    is: "USER",
-    then: Joi.array().items(Joi.string()).required(),
-    otherwise: Joi.forbidden(),
-  }),
-  amount: Joi.when("role", {
-    is: "USER",
-    then: Joi.number().required(),
-    otherwise: Joi.forbidden(),
-  }),
-  paymentDate: Joi.when("role", {
-    is: "USER",
-    then: Joi.number().required(),
-    otherwise: Joi.forbidden(),
-  }),
-  noOfMatchesProposed: Joi.when("role", {
-    is: "USER",
-    then: Joi.number().required(),
-    otherwise: Joi.forbidden(),
-  }),
-  matchmakerId: Joi.string().required().label("Matchmaker ID"),
-  matchmakerName: Joi.string().required().label("Matchmaker Name"),
-});
-
-const registerUser = async (req, res) => {
-  try {
-    const { error } = registerSchema.validate(req.body);
-    if (error) return res.status(400).json({ error: error.details[0].message });
-
-    const {
-      firstName,
-      lastName,
-      email,
-      gender,
-      role,
-      paymentDate,
-      phoneNumber,
-      noOfMatchesProposed,
-      invoiceNumbers,
-      amount,
-      matchmakerName,
-      matchmakerId,
-    } = req.body;
-    const password = Math.random().toString(36).slice(-8);
-    const hashedPassword = await bcrypt.hash(password, 10);
-
-    const newUser = new UserProfile({
-      basicDetails: {
-        firstName,
-        lastName,
-        email,
-        gender,
-        phoneNumber,
-        role,
-      },
-      paymentDetails: {
-        invoiceNumbers,
-        amount,
-        paymentDate,
-        noOfMatchesProposed,
-      },
-      authentication: {
-        username: email,
-        password: hashedPassword,
-        isPasswordResetRequired: true,
-      },
-      matchmaker: {
-        matchmakerName,
-        matchmakerId,
-      },
-    });
-
-    // also get the match maker object and update the
-    // array with the new user id
-    const matchmaker = await Admin.findByIdAndUpdate(
-      matchmakerId,
-      { $push: { undertakingUser: newUser._id } },
-      { new: true }
-    );
-    if (!matchmaker) {
-      return res.status(404).json({ message: "Matchmaker not found" });
-    }
-    await newUser.save();
-
-    // Send registration confirmation email
-    try {
-      await sendRegistrationEmail(email, firstName);
-      console.log(`Registration confirmation email sent to ${email}`);
-    } catch (emailError) {
-      console.error(
-        `Failed to send registration email to ${email}:`,
-        emailError
-      );
-      // Continue with registration process even if email fails
-    }
-
-    res.status(201).json({
-      message: "User registered",
-      data: { email, password, user: newUser },
-    });
-  } catch (err) {
-    res.status(500).json({ error: err.message });
-  }
-};
-
 const verifyLoginOTP = async (req, res) => {
   try {
     const { email, otp, otpId } = req.body;
@@ -134,11 +21,6 @@ const verifyLoginOTP = async (req, res) => {
         status: false,
       });
     }
-
-    console.log("user", user);
-
-    
-
     // Verify OTP
     const isOTPValid = verifyOTP(otp, otpId, email);
     if (!isOTPValid) {
@@ -318,99 +200,66 @@ const uploadImages = (req, res) => {
   });
 };
 
-const restrictedFields = ["basicDetails.email", "basicDetails.phoneNumber"];
+// accept old password and new password
+const changePasswordSchema = Joi.object({
+  oldPassword: Joi.string().required().min(8).label("Old Password"),
+  newPassword: Joi.string().required().min(8).label("New Password"),
+});
+const changePassword = async (req, res) => {
+  console.log("req.body", req.body);
+  try {
+    const { error } = changePasswordSchema.validate(req.body);
+    console.log("req.body", req.body);
+    if (error) {
+      return res.status(400).json({
+        error: error.details[0].message,
+        status: false,
+        message: "Invalid password format",
+      });
+    }
 
-// Define the update schema with allowed fields
-const updateUserProfileSchema = Joi.object({
-  _id: Joi.string(),
-  basicDetails: Joi.object({
-    firstName: Joi.string(),
-    lastName: Joi.string(),
-    gender: Joi.string().valid("Male", "Female"),
-    birthday: Joi.string(),
-    currentCountry: Joi.string(),
-    currentCity: Joi.string(),
-    currentCountryCode: Joi.string(),
-    hometown: Joi.string(),
-    hometownCountry: Joi.string(),
-    hometownCountryCode: Joi.string(),
-    height: Joi.number(),
-    role: Joi.string(),
-    description: Joi.string().allow(""),
-  }).unknown(false),
-  workAndEducation: Joi.object({
-    undergraduateCollege: Joi.string().allow(""),
-    undergraduateDegree: Joi.string().allow(""),
-    postgraduateCollege: Joi.string().allow(""),
-    postgraduateDegree: Joi.string().allow(""),
-    professionalStatus: Joi.string().allow(""),
-    currentCompany: Joi.string().allow(""),
-    designation: Joi.string().allow(""),
-    annualIncome: Joi.number(),
-    description: Joi.string().allow(""),
-  }).unknown(false),
-  background: Joi.object({
-    maritalStatus: Joi.string(),
-    parentsLocation: Joi.string().allow(""),
-    language: Joi.array().items(Joi.string()),
-    numberOfSiblings: Joi.number(),
-    caste: Joi.string().allow(""),
-    fatherOccupation: Joi.string().allow(""),
-    motherOccupation: Joi.string().allow(""),
-    religion: Joi.string().allow(""),
-    briefAboutFamily: Joi.string().allow(""),
-    description: Joi.string().allow(""),
-  }).unknown(false),
-  lifestyleAndPersonality: Joi.object({
-    dietaryPreference: Joi.string(),
-    drinkingHabits: Joi.string(),
-    smokingHabits: Joi.string(),
-    politicalViews: Joi.string(),
-    religiousViews: Joi.string(),
-    stayWithParents: Joi.string().valid("Yes", "No"),
-    hobbies: Joi.string().allow(""),
-    personalGoals: Joi.string().allow(""),
-    bodyType: Joi.string().valid("Slim", "Athletic", "Average", "Heavy"),
-    workout: Joi.string().valid(
-      "Hits the Gym Daily",
-      "Works Out Occasionally",
-      "Plays sports Occasionally",
-      "Aerobic Activities",
-      "Flexibility Activities",
-      "Not into Fitness"
-    ),
-    foodPreferences: Joi.string().valid(
-      "Vegetarian",
-      "Non-Vegetarian",
-      "Eggetarian",
-      "Vegan"
-    ),
-    description: Joi.string().allow(""),
-  }).unknown(false),
-  partnerPreferences: Joi.object({
-    lookForInPartner: Joi.string().allow(""),
-    partnerConstraints: Joi.array().items(Joi.string()),
-    childrenViews: Joi.string(),
-    openToRelocate: Joi.string().valid("Yes", "No"),
-    openToPets: Joi.string().valid("Yes", "No"),
-    description: Joi.string().allow(""),
-  }).unknown(false),
-  profilePictures: Joi.array().items(Joi.string()),
-  documents: Joi.array().items(
-    Joi.object({
-      name: Joi.string(),
-      url: Joi.string(),
-    })
-  ),
-}).unknown(false);
+    console.log("req.user", req.user);
+
+    const user = await UserProfile.findById(req.user.id);
+    console.log("user", user);
+    if (!user) {
+      return res.status(404).json({ message: "User not found" });
+    }
+
+    const isOldPasswordValid = await bcrypt.compare(
+      req.body.oldPassword,
+      user.password
+    );
+    console.log("isOldPasswordValid", isOldPasswordValid);
+    if (!isOldPasswordValid) {
+      return res.status(401).json({ message: "Old password is incorrect" });
+    }
+
+    user.password = await bcrypt.hash(req.body.newPassword, 10);
+    // also set forceChangePassword to false
+    user.passwordResetRequired = false;
+
+    await user.save();
+
+    res.status(200).json({ message: "Password changed successfully", status: true });
+  } catch (err) {
+    console.error("Error changing password:", err);
+    res.status(500).json({
+      error: err.message,
+      status: false,
+      message: "Failed to change password",
+      description: err.message,
+    });
+  }
+
+   
+};
 
 module.exports = {
-  registerUser,
   verifyLoginOTP,
   resendOTP,
   loginUser,
   getUserProfile,
   uploadImages,
-  updateUserProfileSchema,
-  restrictedFields,
+  changePassword,
 };

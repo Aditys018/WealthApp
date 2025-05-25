@@ -6,6 +6,8 @@ const { Admin } = require('./admin.model.js');
 const { Role } = require('./role.model.js');
 const { UserProfile } = require('./user.model.js');
 const { Company } = require('./company.model.js');
+const { Log } = require('./log.model.js');
+const { PropertyType } = require('./property-type.js');
 
 module.exports = {
   mongoose,
@@ -13,4 +15,6 @@ module.exports = {
   Role,
   UserProfile,
   Company,
+  Log,
+  PropertyType
 };
