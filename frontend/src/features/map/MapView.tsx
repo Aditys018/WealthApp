@@ -1,4 +1,4 @@
-import React, { useState, useCallback, useRef } from 'react'
+import React, { useState, useCallback, useRef, useEffect } from 'react'
 import {
   GoogleMap,
   LoadScript,
@@ -155,6 +155,33 @@ const PropertyMap = ({ googleApiKey }) => {
     setMap(map)
   }, [])
 
+  const inputRef = useRef(null)
+
+  const initAutocomplete = useCallback(() => {
+    if (!window.google || !inputRef.current) return
+
+    const autocomplete = new window.google.maps.places.Autocomplete(
+      inputRef.current,
+      {
+        fields: ['geometry'],
+        types: ['geocode'], // or 'establishment' depending on your use case
+      },
+    )
+
+    autocomplete.addListener('place_changed', () => {
+      const place = autocomplete.getPlace()
+      if (!place.geometry) return
+
+      const location = place.geometry.location
+      const lat = location?.lat()
+      const lng = location?.lng()
+
+      // Pan and zoom to the selected place
+      map?.panTo({ lat, lng })
+      map?.setZoom(15)
+    })
+  }, [map])
+
   const onUnmount = useCallback(() => {
     setMap(null)
   }, [])
@@ -247,12 +274,28 @@ const PropertyMap = ({ googleApiKey }) => {
     }
   }, [map])
 
+  useEffect(() => {
+    if (map) {
+      initAutocomplete()
+    }
+  }, [map, initAutocomplete])
+
   return (
     <div className="relative w-full h-full">
       <LoadScript
-        libraries={['geometry']}
+        libraries={['geometry', 'places']}
         googleMapsApiKey="AIzaSyCOTKgJdgCv_nu989DjZjpej0pv9dLBfs4"
       >
+        <input
+          ref={inputRef}
+          id="search-box"
+          type="text"
+          placeholder="Search for a location..."
+          className="z-10 w-full p-2 rounded-md shadow-md
+           bg-white border border-gray-300 focus:outline-none focus:ring-2
+            focus:ring-gray-100"
+        />
+
         <GoogleMap
           ref={googleMapsRef}
           // onBoundsChanged={onBoundsChanged}
