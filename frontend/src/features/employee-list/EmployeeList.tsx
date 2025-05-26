@@ -1,6 +1,5 @@
 import { useCompanyEmployeesListQuery } from '@/api'
 import { useAuth } from '@/context'
-import { Navbar } from '@/global-components/navbar/navbar'
 
 const EmployeeTable = () => {
   const { user } = useAuth()
@@ -77,76 +76,74 @@ const EmployeeTable = () => {
   }
 
   return (
-    <>
-      <Navbar />
+    <section className="w-full max-w-6xl mx-auto px-6 py-12">
+      <div className="mb-8 text-accent">
+        <h2 className="text-3xl font-bold">Employee List</h2>
+        <p className="text-gray-400 mt-1">Manage team members and their access permissions.</p>
+      </div>
 
-      <section className="w-full max-w-6xl mx-auto px-6 py-12">
-        <div className="mb-8 text-accent">
-          <h2 className="text-3xl font-bold">Employee List</h2>
-          <p className="text-gray-400 mt-1">Manage team members and their access permissions.</p>
-        </div>
-
-        <div className="rounded-xl shadow-lg overflow-hidden bg-[#1f1f1f] border border-[#2e2e2e]">
-          <table className="w-full table-auto">
-            <thead>
-              <tr className="bg-[#2b2b2b] text-[#ff9500]">
-                <th className="py-4 px-5 text-left text-sm uppercase tracking-wide">First Name</th>
-                <th className="py-4 px-5 text-left text-sm uppercase tracking-wide">Email</th>
-                <th className="py-4 px-5 text-left text-sm uppercase tracking-wide">Role</th>
-                <th className="py-4 px-5 text-left text-sm uppercase tracking-wide">Invitation Date</th>
-                <th className="py-4 px-5 text-left text-sm uppercase tracking-wide">Permissions</th>
-              </tr>
-            </thead>
-            <tbody className="text-gray-200 divide-y divide-[#333]">
-              {employees.map((employee) => (
-                <tr key={employee._id} className="hover:bg-[#2a2a2a] transition">
-                  <td className="py-4 px-5 font-medium">{employee.firstName}</td>
-                  <td className="py-4 px-5 text-gray-400">{employee.email}</td>
-                  <td className="py-4 px-5">
-                    <span
-                      className={`inline-flex items-center px-2.5 py-1 rounded-full text-xs font-medium border ${getRoleStyles(
-                        employee.role
-                      )}`}
-                    >
-                      {employee.role}
-                    </span>
-                  </td>
-                  <td className="py-4 px-5 text-gray-400">
+      <div className="rounded-xl shadow-lg overflow-hidden bg-[#1f1f1f] border border-[#2e2e2e]">
+        <table className="w-full table-auto">
+          <thead>
+            <tr className="bg-[#2b2b2b] text-[#ff9500]">
+              <th className="py-4 px-5 text-left text-xs uppercase tracking-wide">Name</th>
+              <th className="py-4 px-5 text-left text-xs uppercase tracking-wide">Email</th>
+              <th className="py-4 px-5 text-left text-xs uppercase tracking-wide">Role</th>
+              <th className="py-4 px-5 text-left text-xs uppercase tracking-wide">Date Joined</th>
+              <th className="py-4 px-5 text-left text-xs uppercase tracking-wide">Permissions</th>
+            </tr>
+          </thead>
+          <tbody className="text-sm text-gray-200 divide-y divide-[#333]">
+            {employees.map((employee) => (
+              <tr key={employee._id} className="hover:bg-[#2a2a2a] transition">
+                <td className="py-4 px-5 font-medium align-middle whitespace-nowrap">{employee.firstName}</td>
+                <td className="py-4 px-5 text-gray-400 align-middle whitespace-nowrap">{employee.email}</td>
+                <td className="py-4 px-5 align-middle">
+                  <span
+                    className={`inline-flex items-center px-2.5 py-1 rounded-full text-xs font-medium border ${getRoleStyles(
+                      employee.role
+                    )}`}
+                  >
+                    {employee.role}
+                  </span>
+                </td>
+                <td className="py-4 px-5 align-middle">
+                  <span className="inline-block bg-[#2e2e2e] px-3 py-1 rounded text-xs border border-gray-600 text-gray-300 whitespace-nowrap">
                     {formatDate(employee.company.invitationDate)}
-                  </td>
-                  <td className="py-4 px-5">
-                    <div className="flex flex-wrap gap-1">
-                      {Object.entries(employee.company.permissions)
-                        .filter(([_, value]) => value)
-                        .map(([permission]) => (
-                          <span
-                            key={permission}
-                            className={`inline-flex items-center px-2 py-1 rounded text-xs font-medium border ${getPermissionStyles(
-                              permission
-                            )}`}
-                          >
-                            {permission
-                              .replace(/^can/, '')
-                              .replace(/([A-Z])/g, ' $1')
-                              .trim()}
-                          </span>
-                        ))}
-                      {Object.values(employee.company.permissions).every((v) => !v) && (
-                        <span className="text-xs text-gray-400 italic">No permissions</span>
-                      )}
-                    </div>
-                  </td>
-                </tr>
-              ))}
-            </tbody>
-          </table>
-        </div>
+                  </span>
+                </td>
+                <td className="py-4 px-5 align-middle">
+                  <div className="flex flex-wrap gap-1">
+                    {Object.entries(employee.company.permissions)
+                      .filter(([_, value]) => value)
+                      .map(([permission]) => (
+                        <span
+                          key={permission}
+                          className={`inline-flex items-center px-2 py-1 rounded text-xs font-medium border ${getPermissionStyles(
+                            permission
+                          )}`}
+                        >
+                          {permission
+                            .replace(/^can/, '')
+                            .replace(/([A-Z])/g, ' $1')
+                            .trim()}
+                        </span>
+                      ))}
+                    {Object.values(employee.company.permissions).every((v) => !v) && (
+                      <span className="text-xs text-gray-400 italic">No permissions</span>
+                    )}
+                  </div>
+                </td>
+              </tr>
+            ))}
+          </tbody>
+        </table>
+      </div>
 
-        <div className="mt-4 text-sm text-gray-500 text-center">
-          Showing {employees.length} employee{employees.length !== 1 ? 's' : ''}
-        </div>
-      </section>
-    </>
+      <div className="mt-4 text-sm text-gray-500 text-center">
+        Showing {employees.length} employee{employees.length !== 1 ? 's' : ''}
+      </div>
+    </section>
   )
 }
 

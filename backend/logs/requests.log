@@ -38,3 +38,16 @@
 2025-05-26T07:32:03.278Z - ID: Anonymous - Route: /identity/send-otp - Method: POST - Query: {} - Body: {"firstName":"Divyansh","email":"div.gyan09@gmail.com"}
 2025-05-26T07:32:39.423Z - ID: Anonymous - Route: /companies/register - Method: POST - Query: {} - Body: {"name":"WealthApp","industry":"IT","email":"div.gyan09@gmail.com","otp":"540540","password":"Aditishinde1804^@","contactPhone":"8080607564","logo":"https://dummyimage.com/300","address":{"street":"13west","city":"Mumbai","state":"Maharashtra","country":"India","zipCode":"342837"},"otpId":"62f0de7a-8259-44df-8238-faac40b1d613"}
 2025-05-26T07:33:21.324Z - ID: Anonymous - Route: /user/login - Method: POST - Query: {} - Body: {"email":"div.gyan09@gmail.com","password":"Aditishinde1804^@"}
+2025-05-26T08:59:58.215Z - ID: 68342af434f8c3f9ac0d7d78 - Route: /companies/68342af434f8c3f9ac0d7d7a/employees - Method: GET - Query: {} - Body: undefined
+2025-05-26T09:00:02.183Z - ID: 68342af434f8c3f9ac0d7d78 - Route: /companies/68342af434f8c3f9ac0d7d7a/employees - Method: GET - Query: {} - Body: undefined
+2025-05-26T09:00:20.536Z - ID: 68342af434f8c3f9ac0d7d78 - Route: /companies/68342af434f8c3f9ac0d7d7a/employees - Method: GET - Query: {} - Body: undefined
+2025-05-26T09:00:24.190Z - ID: 68342af434f8c3f9ac0d7d78 - Route: /companies/68342af434f8c3f9ac0d7d7a/employees - Method: GET - Query: {} - Body: undefined
+2025-05-26T09:02:48.761Z - ID: 68342af434f8c3f9ac0d7d78 - Route: /companies/68342af434f8c3f9ac0d7d7a/employees - Method: GET - Query: {} - Body: undefined
+2025-05-26T09:03:29.436Z - ID: 68342af434f8c3f9ac0d7d78 - Route: /companies/68342af434f8c3f9ac0d7d7a/employees - Method: GET - Query: {} - Body: undefined
+2025-05-26T09:03:58.689Z - ID: 68342af434f8c3f9ac0d7d78 - Route: /companies/68342af434f8c3f9ac0d7d7a/employees - Method: GET - Query: {} - Body: undefined
+2025-05-26T09:07:19.203Z - ID: 68342af434f8c3f9ac0d7d78 - Route: /companies/68342af434f8c3f9ac0d7d7a/employees - Method: GET - Query: {} - Body: undefined
+2025-05-26T09:07:22.057Z - ID: 68342af434f8c3f9ac0d7d78 - Route: /companies/68342af434f8c3f9ac0d7d7a/employees - Method: GET - Query: {} - Body: undefined
+2025-05-26T09:08:48.949Z - ID: 68342af434f8c3f9ac0d7d78 - Route: /companies/68342af434f8c3f9ac0d7d7a/employees - Method: GET - Query: {} - Body: undefined
+2025-05-26T09:09:06.689Z - ID: 68342af434f8c3f9ac0d7d78 - Route: /companies/68342af434f8c3f9ac0d7d7a/employees - Method: GET - Query: {} - Body: undefined
+2025-05-26T09:09:39.199Z - ID: 68342af434f8c3f9ac0d7d78 - Route: /companies/68342af434f8c3f9ac0d7d7a/employees - Method: GET - Query: {} - Body: undefined
+2025-05-26T09:09:41.017Z - ID: 68342af434f8c3f9ac0d7d78 - Route: /companies/68342af434f8c3f9ac0d7d7a/employees - Method: GET - Query: {} - Body: undefined
