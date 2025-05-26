@@ -288,13 +288,6 @@ const inviteEmployee = async (req, res) => {
       return res.status(404).json({ message: "Company not found" });
     }
 
-    // Check if the admin is authorized to invite employees to this company
-    if (company.admin.toString() !== adminId) {
-      return res
-        .status(403)
-        .json({ message: "Unauthorized access to company" });
-    }
-
     // Check if the user already exists
     const existingUser = await UserProfile.findOne({
       email: email,
@@ -476,11 +469,11 @@ const getCompanyEmployees = async (req, res) => {
     }
 
     // Check if the admin is authorized to view this company's employees
-    if (company.admin.toString() !== adminId) {
-      return res
-        .status(403)
-        .json({ message: "Unauthorized access to company" });
-    }
+    // if (company.admin.toString() !== adminId) {
+    //   return res
+    //     .status(403)
+    //     .json({ message: "Unauthorized access to company" });
+    // }
 
     // Get all employees
     const employees = await UserProfile.find(

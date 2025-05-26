@@ -14,7 +14,8 @@ interface IContentWithImageProps {
   onSecondaryClick?: () => void
   imagePosition?: 'left' | 'right'
   className?: string
-  showGetStartedButton?: boolean 
+  showGetStartedButton?: boolean
+  showLoginButton?: boolean
 }
 
 export function ContentWithImage({
@@ -29,6 +30,7 @@ export function ContentWithImage({
   imagePosition = 'right',
   className,
   showGetStartedButton = false,
+  showLoginButton = false,
 }: IContentWithImageProps) {
   const isLeft = imagePosition === 'left'
   const navigate = useNavigate()
@@ -50,30 +52,47 @@ export function ContentWithImage({
           {/* Content Section */}
           <div className="flex flex-col flex-1 max-w-full md:max-w-lg lg:max-w-2xl">
             {/* Heading */}
-            <h2
-              className="text-2xl sm:text-2xl lg:text-3xl font-bold tracking-tight mb-6 text-[#FF9500] leading-none text-left"
-            >
+            <h2 className="text-2xl sm:text-2xl lg:text-3xl font-bold tracking-tight mb-6 text-[#FF9500] leading-none text-left">
               {title}
             </h2>
 
             {/* Description */}
             <div className="text-base sm:text-lg text-white/80 mb-9 leading-relaxed text-left">
-              {typeof description === 'string' ? <p>{description}</p> : description}
+              {typeof description === 'string' ? (
+                <p>{description}</p>
+              ) : (
+                description
+              )}
             </div>
 
-            {/* Get Started Button */}
-            {showGetStartedButton && (
-              <div className="flex justify-start mb-8">
-                <Button
-                  variant="ghost"
-                  size="lg"
-                  className="!bg-[#FF9500] hover:!bg-[#ffb84d] text-black font-bold px-10 py-6 rounded-lg text-xl shadow-lg hover:shadow-xl transition-all duration-300"
-                  onClick={() => navigate({ to: '/register' })}
-                >
-                  Get Started
-                </Button>
-              </div>
-            )}
+            <div className="flex flex-col gap-2 md:gap-4 md:flex-row">
+              {/* Get Started Button */}
+              {showGetStartedButton ? (
+                <div className="flex justify-start mb-8">
+                  <Button
+                    variant="ghost"
+                    size="lg"
+                    className="!bg-[#FF9500] hover:!bg-[#ffb84d] text-black font-bold px-10 py-6 rounded-lg text-xl shadow-lg hover:shadow-xl transition-all duration-300"
+                    onClick={() => navigate({ to: '/register' })}
+                  >
+                    Get Started
+                  </Button>
+                </div>
+              ) : null}
+
+              {showLoginButton ? (
+                <div className="flex justify-start mb-8">
+                  <Button
+                    variant="ghost"
+                    size="lg"
+                    className="!bg-[#FF9500] hover:!bg-[#ffb84d] text-black font-bold px-10 py-6 rounded-lg text-xl shadow-lg hover:shadow-xl transition-all duration-300"
+                    onClick={() => navigate({ to: '/login' })}
+                  >
+                    Login
+                  </Button>
+                </div>
+              ) : null}
+            </div>
 
             {/* Primary/Secondary Buttons */}
             {(primaryButtonText || secondaryButtonText) && (

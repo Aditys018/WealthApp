@@ -4,33 +4,33 @@ import type { QueryClient } from '@tanstack/react-query'
 import {
   Outlet,
   createRootRouteWithContext,
-  useRouter,
+  useLocation,
 } from '@tanstack/react-router'
 import { TanStackRouterDevtools } from '@tanstack/react-router-devtools'
 import TanStackQueryLayout from '../integrations/tanstack-query/layout.tsx'
+import { useAuth } from '@/context/AuthContext.tsx'
 
 interface MyRouterContext {
   queryClient: QueryClient
 }
 
 export const Route = createRootRouteWithContext<MyRouterContext>()({
-  component: () => {
-    const router = useRouter()
-    const currentPath = router.state.location.pathname
-
-    // Show only logo header on these pages
-    const showOnlyLogoHeader = [
-      '/contentwithimages',
-      '/registercompany',
-    ].includes(currentPath)
-
-    return (
-      <>
-        {showOnlyLogoHeader ? <Header /> : <Navbar />}
-        <Outlet />
-        <TanStackRouterDevtools />
-        <TanStackQueryLayout />
-      </>
-    )
-  },
+  component: RootLayout,
 })
+
+function RootLayout() {
+  const { user } = useAuth()
+  const location = useLocation()
+  const currentPath = location.pathname
+
+  const isAuthPage = ['/', '/login', '/register'].includes(currentPath)
+
+  return (
+    <>
+      {user ? <Navbar /> : isAuthPage ? <Header /> : null}
+      <Outlet />
+      <TanStackRouterDevtools />
+      <TanStackQueryLayout />
+    </>
+  )
+}

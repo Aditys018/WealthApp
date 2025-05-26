@@ -1,29 +1,26 @@
+import { useAuth } from '@/context'
 import { Link, useNavigate } from '@tanstack/react-router'
 import { useState } from 'react'
 
 export const Navbar = () => {
   const navigate = useNavigate()
   const [activeSection, setActiveSection] = useState('dashboard')
+  const { logout } = useAuth()
 
   const navItems = [
-   
     {
       label: 'DASHBOARD',
-      path: '/admindashboard',
-      
+      path: '/dashboard',
     },
-    
+
     {
       label: 'PROPERTIES',
       path: '/properties',
-      
     },
-     {
+    {
       label: 'PROFILE',
       path: '/profile',
-     
     },
-   
   ]
 
   const handleNavigation = (path: string, label: string) => {
@@ -31,9 +28,14 @@ export const Navbar = () => {
     setActiveSection(label.toLowerCase())
   }
 
+  const handleLogout = () => {
+    logout()
+    navigate({ to: '/' })
+  }
+
   return (
     <header className="w-full z-50 bg-[#1d1d1d] px-4 sm:px-6 lg:px-8 py-3 sm:py-4 lg:py-5">
-      <div className="max-w-7xl mx-auto flex items-center justify-between">
+      <div className="max-w-7xl mx-auto flex flex-col md:flex-row items-center justify-between">
         {/* Logo */}
         <Link to="/" className="flex items-center gap-2">
           <img
@@ -54,14 +56,17 @@ export const Navbar = () => {
                   activeSection === item.label.toLowerCase()
                     ? 'text-[#ff9500]'
                     : 'text-gray-300 hover:text-[#ff9500]'
-                } px-3 py-2 rounded-md text-sm font-medium transition-colors duration-200 flex items-center space-x-2`}
+                } px-3 py-2 rounded-md cursor-pointer text-sm font-medium transition-colors duration-200 flex items-center space-x-2`}
               >
-               
                 <span>{item.label}</span>
               </button>
             ))}
           </div>
         </nav>
+
+        <button className="text-accent cursor-pointer" onClick={handleLogout}>
+          Logout
+        </button>
 
         {/* Empty div to maintain spacing */}
         <div className="w-[150px]"></div>

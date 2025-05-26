@@ -48,3 +48,14 @@ export interface IVerifyLoginOtpResponse {
     }
   }
 }
+
+export interface IResetPasswordPayload {
+  oldPassword: string
+  newPassword: string
+}
+
+export interface IResetPasswordResponse {
+  message: string
+  status: boolean
+  data: unknown
+}
