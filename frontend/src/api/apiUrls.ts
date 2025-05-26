@@ -6,6 +6,9 @@ export const imageUploadUrl = '/user/upload'
 
 export const placesListUrl = '/places/list-properties'
 
+export const propertyDetailsUrl = (placeId: string) =>
+  `/places/property/${placeId}`
+
 export const loginUrl = '/user/login'
 
 export const verifyOtpUrl = 'user/verify-otp'

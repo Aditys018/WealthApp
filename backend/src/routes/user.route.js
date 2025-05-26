@@ -38,6 +38,7 @@ const {
   verifyLoginOTP,
   resendOTP,
   changePassword,
+  getRandomWealth
 } = require("../controller");
 const { checkRole, log } = require("../middlewares");
 
@@ -79,6 +80,12 @@ router.post("/login", log, loginUser);
 router.post("/verify-otp", log, verifyLoginOTP);
 router.post("/resend-otp", log, resendOTP);
 // router.patch("/:id", updateUserProfile);
+router.get(
+	"/random-wealth",
+	checkRole(["ADMIN", "COMPANY_ADMIN", "EMPLOYEE"]),
+	log,
+	getRandomWealth
+  );
 router.get("/:id", log, getUserProfile);
 router.post("/upload", uploadMiddleware, log, uploadImages);
 router.post(
