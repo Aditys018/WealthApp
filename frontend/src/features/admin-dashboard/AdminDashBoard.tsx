@@ -13,6 +13,10 @@ export const AdminDashboard = () => {
     navigate({ to: '/list' })
   }
 
+  const handleAccessControl = () => {
+    navigate({ to: '/admincontrol'})
+  }
+
   const dashboardItems = [
     {
       title: 'Invite Employee',
@@ -27,9 +31,9 @@ export const AdminDashboard = () => {
       icon: <MdPerson className="w-15 h-15 text-[#ff9500]" />,
     },
     {
-      title: 'Company Settings',
-      description: 'Update company information and preferences',
-      action: () => toast.info('Coming soon'),
+      title: 'Access Control Panel',
+      description: 'Check Employee Activity, Give or Revoke employee access',
+      action: handleAccessControl,
       icon: <MdSettings className="w-15 h-15 text-[#ff9500]" />,
     },
     {
