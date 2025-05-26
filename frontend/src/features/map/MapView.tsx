@@ -8,14 +8,13 @@ import {
   Marker,
 } from '@react-google-maps/api'
 import { Bath, Bed, Eye, MapPin, Square } from 'lucide-react'
-import { useCallback, useEffect, useRef, useState } from 'react'
-
-// Sample property data
+import { useCallback, useEffect, useRef, useState, useMemo } from 'react'
+import { useNavigate } from '@tanstack/react-router'
 
 // Map container style
 const containerStyle = {
   width: '100%',
-  height: '710px',
+  height: '100vh',
   borderRadius: '12px',
 }
 
@@ -138,17 +137,31 @@ const options = {
   ],
 }
 
-const PropertyMap = ({ googleApiKey }) => {
+const PropertyMap = () => {
   const [selectedProperty, setSelectedProperty] = useState(null)
   const [map, setMap] = useState(null)
   const [mapCenter, setMapCenter] = useState(center)
-  const { data, isError, isLoading } = useListPlacesQuery({
-    lat: mapCenter.lat,
-    long: mapCenter.lng,
-    radius: 5, // 5 km radius
-    page: 1,
-    pageSize: 20,
-  })
+  const [radius, setRadius] = useState(5) // Default radius in km
+  const [listing_status, setListingStatus] = useState('For Sale')
+  const [propertyType, setPropertyType] = useState('Houses')
+  const [isProgrammaticMove, setIsProgrammaticMove] = useState(false)
+  const navigate = useNavigate()
+
+  // Memoize the query parameters to prevent unnecessary re-renders
+  const queryParams = useMemo(
+    () => ({
+      lat: mapCenter.lat,
+      long: mapCenter.lng,
+      radius, // 5 km radius
+      page: 1,
+      pageSize: 20,
+      propertyType,
+      listing_status,
+    }),
+    [mapCenter.lat, mapCenter.lng, radius, listing_status, propertyType],
+  )
+
+  const { data, isError, isLoading } = useListPlacesQuery(queryParams)
 
   const onLoad = useCallback((map) => {
     setMap(map)
@@ -177,7 +190,7 @@ const PropertyMap = ({ googleApiKey }) => {
 
       // Pan and zoom to the selected place
       map?.panTo({ lat, lng })
-      map?.setZoom(22)
+      map?.setZoom(16)
     })
   }, [map])
 
@@ -185,19 +198,18 @@ const PropertyMap = ({ googleApiKey }) => {
     setMap(null)
   }, [])
 
-  const handleMarkerClick = (property) => {
-    setSelectedProperty(property)
-  }
-
   const handleInfoWindowClose = () => {
     setSelectedProperty(null)
   }
 
-  const handlePropertyClick = (property) => {
+  // Simplified handlePropertyClick - only sets selected property
+  const handlePropertyClick = useCallback((property) => {
     setSelectedProperty(property)
-    map?.panTo({ lat: property.lat, lng: property.lng })
-    map?.setZoom(15)
-  }
+    setIsProgrammaticMove(true)
+    // Optionally pan to the property
+    // map?.panTo({ lat: property.lat, lng: property.lng })
+    // map?.setZoom(16)
+  }, [])
 
   // Custom marker icon for properties
   const propertyIcon = {
@@ -212,8 +224,8 @@ const PropertyMap = ({ googleApiKey }) => {
     `),
     scaledSize: { width: 32, height: 40 },
   }
-  const googleMapsRef = useRef<GoogleMap>(null)
-  console.log('googleMapsRef', googleMapsRef.current)
+
+  const googleMapsRef = useRef(null)
 
   const getStatusBadgeVariant = (status) => {
     switch (status) {
@@ -225,53 +237,56 @@ const PropertyMap = ({ googleApiKey }) => {
         return 'outline'
     }
   }
+  const handleRouteToDetails = (propertyId: string) => {
+    console.log('Navigating to property details for:', propertyId)
+    navigate({
+      to: '/details/$id',
+      params: { id: propertyId },
+    })
+  }
 
+  // Debounced map idle handler to prevent excessive API calls
   const handleMapIdle = useCallback(() => {
-    if (map) {
+    if (map && !isProgrammaticMove) {
       console.log('Map is idle, fetching center and bounds...')
-      const center = map.getCenter()
-      setMapCenter(center.toJSON())
+
+      const newCenter = map.getCenter()
+      const centerJson = newCenter.toJSON()
+
+      // Only update if the center has actually changed significantly
+      const threshold = 0.001 // Adjust this threshold as needed
+      if (
+        Math.abs(centerJson.lat - mapCenter.lat) > threshold ||
+        Math.abs(centerJson.lng - mapCenter.lng) > threshold
+      ) {
+        setMapCenter(centerJson)
+      }
+
       const bounds = map.getBounds()
-
       const zoom = map.getZoom()
-      console.log('Current Zoom Level:', zoom)
 
-      // calculate the approximate radius based on the center and bounds
+      console.log('Current Zoom Level:', zoom)
       console.log('Map Bounds:', {
         northEast: bounds.getNorthEast().toJSON(),
         southWest: bounds.getSouthWest().toJSON(),
       })
-      console.log('Map Center:', center.toJSON())
-      console.log('Map Zoom Level:', zoom)
-      // If you need to calculate the radius, you can use the center and bounds
-      // const radius = window.google.maps.geometry.spherical.computeDistanceBetween(
-      //   center,
-      //   bounds.getNorthEast()
-      // )
+      console.log('Map Center:', centerJson)
 
-      if (center && bounds) {
+      if (newCenter && bounds && window.google) {
         const ne = bounds.getNorthEast()
-
-        if (window.google) {
-          console.log('Google Maps Geometry library is loaded.')
-          console.log('Calculating radius...')
-          console.log(window.google.maps.geometry)
-        }
-
         const radius =
           window.google.maps.geometry.spherical.computeDistanceBetween(
-            center,
+            newCenter,
             ne,
           )
-
-        console.log('Map Center:', {
-          lat: center.lat(),
-          lng: center.lng(),
-        })
         console.log('Approx. Radius (meters):', radius)
+        setRadius(radius / 1000) // Convert to kilometers
       }
+    } else if (isProgrammaticMove) {
+      console.log('Map was moved programmatically, skipping center update.')
+      setIsProgrammaticMove(false)
     }
-  }, [map])
+  }, [map, mapCenter.lat, mapCenter.lng, isProgrammaticMove])
 
   useEffect(() => {
     if (map) {
@@ -295,39 +310,33 @@ const PropertyMap = ({ googleApiKey }) => {
              bg-white border border-gray-300 focus:outline-none focus:ring-2
               focus:ring-gray-100 ml-100"
           />
-          
-          <select 
+
+          <select
             className="p-2 rounded-md shadow-md bg-white border border-gray-300 focus:outline-none focus:ring-2 focus:ring-gray-100"
             placeholder="Property Type"
+            value={propertyType}
+            onChange={(e) => setPropertyType(e.target.value)}
           >
-            <option value="">Property Type</option>
-            <option value="house">House</option>
-            <option value="apartment">Apartment</option>
-            <option value="condo">Condo</option>
-            <option value="townhouse">Townhouse</option>
-            <option value="nursery">Nursery</option>
+            <option value="house">Houses</option>
+            <option value="apartment">Apartments</option>
+            <option value="condo">Multi-family</option>
+            <option value="townhouse">Condos/Co-ops</option>
+            <option value="nursery">Lots/Land</option>
             <option value="greenhouse">Greenhouse</option>
-            <option value="ployhouse">Ployhouse</option>
+            <option value="ployhouse">Townhomes</option>
           </select>
 
-          <input
-            type="text"
-            placeholder="Zipcode"
-            className="w-32 p-2 rounded-md shadow-md bg-white border border-gray-300 focus:outline-none focus:ring-2 focus:ring-gray-100"
-          />
-
-          <div className="flex gap-2">
-            <input
-              type="number"
-              placeholder="Min Price"
-              className="w-32 p-2 rounded-md shadow-md bg-white border border-gray-300 focus:outline-none focus:ring-2 focus:ring-gray-100"
-            />
-            <input
-              type="number"
-              placeholder="Max Price"
-              className="w-32 p-2 rounded-md shadow-md bg-white border border-gray-300 focus:outline-none focus:ring-2 focus:ring-gray-100"
-            />
-          </div>
+          <select
+            className="p-2 rounded-md shadow-md bg-white border border-gray-300 focus:outline-none focus:ring-2 focus:ring-gray-100"
+            placeholder="Listing Status"
+            value={listing_status}
+            onChange={(e) => setListingStatus(e.target.value)}
+          >
+            <option value="">Sold</option>
+            <option value="house">For_Sale</option>
+            <option value="apartment">For_Rent</option>
+            
+          </select>
         </div>
 
         <div className="relative">
@@ -336,7 +345,7 @@ const PropertyMap = ({ googleApiKey }) => {
             mapContainerStyle={containerStyle}
             mapContainerClassName="rounded-xl shadow-lg"
             center={center}
-            zoom={17}
+            zoom={14}
             onLoad={onLoad}
             onUnmount={onUnmount}
             options={options}
@@ -346,7 +355,7 @@ const PropertyMap = ({ googleApiKey }) => {
               <Marker
                 key={property.id}
                 position={{ lat: property.lat, lng: property.lng }}
-                onClick={() => handleMarkerClick(property)}
+                onClick={() => handlePropertyClick(property)}
                 icon={propertyIcon}
                 title={property.title}
               />
@@ -363,7 +372,7 @@ const PropertyMap = ({ googleApiKey }) => {
                 <div className="max-w-sm p-0 m-0">
                   <div className="relative">
                     <img
-                      src={selectedProperty.image}
+                      src={selectedProperty.bannerImage}
                       alt={selectedProperty.title}
                       className="w-full h-32 object-cover rounded-t-lg"
                     />
@@ -414,6 +423,7 @@ const PropertyMap = ({ googleApiKey }) => {
                           'View details for property:',
                           selectedProperty.id,
                         )
+                        handleRouteToDetails(selectedProperty.id)
                       }}
                     >
                       <Eye className="w-4 h-4 mr-1" />
@@ -439,15 +449,14 @@ const PropertyMap = ({ googleApiKey }) => {
           {isError && (
             <div className="absolute inset-0 bg-black/30 flex items-center justify-center rounded-xl">
               <div className="bg-white p-4 rounded-lg shadow-lg">
-                <span className="text-red-600">Error loading properties. Please try again.</span>
+                <span className="text-red-600">
+                  Error loading properties. Please try again.
+                </span>
               </div>
             </div>
           )}
         </div>
       </LoadScript>
-
-      {/* Property list sidebar */}
-      {/*  */}
     </div>
   )
 }

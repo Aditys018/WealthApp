@@ -1,8 +1,5 @@
-
 const axios = require("axios");
 const { PropertyType } = require("../model");
-// Replace with your actual ATTOM API key
-const ATTOM_API_KEY = "283129a21a7f8361fee7404e88463f15";
 
 const propertyList = async (req, res) => {
   try {
@@ -11,45 +8,57 @@ const propertyList = async (req, res) => {
     });
     const lat = parseFloat(req.query.lat) || 40.7589;
     const lng = parseFloat(req.query.long) || -73.9851;
+    const radius = parseFloat(req.query.radius) || 5; // Default radius to 5 miles
+    const page = parseInt(req.query.page) || 1; // Default to page 1
+    const listingStatus = req.query.listingStatus || "Sold"; // Default to "Sold"
+    const propertyType = req.query.propertyType; // Default to "Apartment"
     console.log("Coordinates:", { lat, lng });
 
-    const attomResponse = await axios.get(
-      "https://api.gateway.attomdata.com/propertyapi/v1.0.0/property/snapshot",
+    const response = await axios.get(
+      "https://zillow-working-api.p.rapidapi.com/search/bycoordinates",
       {
         params: {
           latitude: lat,
           longitude: lng,
-          radius: 10,
-          pagesize: 50,
+          radius: radius,
           page: 1,
-          // propertyType: "APARTMENT",
+          listingStatus: listingStatus,
+          homeType: propertyType || null,
         },
         headers: {
-          Accept: "application/json",
-          apikey: ATTOM_API_KEY,
+          "x-rapidapi-host": "zillow-working-api.p.rapidapi.com",
+          "x-rapidapi-key":
+            "4fdbde75c1msh8f2f71bd26245c7p153e40jsn7f62e28bb370",
         },
       }
     );
 
-    const properties = attomResponse.data.property.map((p, idx) => ({
-      id: p.identifier?.Id || idx + 1,
-      title: `${p.summary?.propertyType || "Apartment"} - Built in ${
-        p.summary?.yearbuilt || "N/A"
-      }`,
-      attomId: p.identifier?.attomId || "N/A",
-      type: p.summary?.propclass || "Apartment",
-      area: `${
-        p.building?.size?.universalsize?.toLocaleString() || "N/A"
-      } sq ft`,
-      address: p.address?.oneLine || "Address not available",
-      lat: parseFloat(p.location?.latitude),
-      lng: parseFloat(p.location?.longitude),
-    }));
+    const props = response.data.searchResults || [];
+    const transformed = props.map((item) => {
+      const p = item.property;
+      return {
+        id: p.zpid,
+        title: `${p.propertyType?.toUpperCase() || "UNKNOWN"} - Built in ${
+          p.yearBuilt || "N/A"
+        }`,
+        attomId: p.zpid,
+        type: p.propertyType || "N/A",
+        area: `${p.livingArea || "N/A"} sq ft`,
+        address: `${p.address?.streetAddress || ""}, ${
+          p.address?.city || ""
+        }, ${p.address?.state || ""} ${p.address?.zipcode || ""}`,
+        lat: p.location?.latitude,
+        lng: p.location?.longitude,
+        bannerImage:
+          p.media.propertyPhotoLinks.highResolutionLink ||
+          "https://via.placeholder.com/150",
+      };
+    });
 
     res.status(200).json({
       message: "Properties fetched successfully",
       status: true,
-      data: properties,
+      data: transformed,
     });
   } catch (error) {
     console.error(
@@ -70,119 +79,64 @@ const propertyList = async (req, res) => {
 const propertyDetails = async (req, res) => {
   try {
     const propertyId = req.params.id;
-    console.log("Fetching property details for ID:", propertyId);
-
-    const attomResponse = await axios.get(
-      `https://api.gateway.attomdata.com/propertyapi/v1.0.0/property/detail?id=${propertyId}`,
+    const response = await axios.get(
+      "https://zillow-working-api.p.rapidapi.com/pro/byzpid?zpid=" + propertyId,
       {
         headers: {
-          Accept: "application/json",
-          apikey: ATTOM_API_KEY,
+          "x-rapidapi-host": "zillow-working-api.p.rapidapi.com",
+          "x-rapidapi-key":
+            "4fdbde75c1msh8f2f71bd26245c7p153e40jsn7f62e28bb370",
         },
       }
     );
-    console.log("Property details response:", attomResponse.data);
+
+    const priceResponse = await axios.get(
+      "https://zillow-working-api.p.rapidapi.com/pricehistory?byzpid=" + propertyId,
+      {
+        headers: {
+          "x-rapidapi-host": "zillow-working-api.p.rapidapi.com",
+          "x-rapidapi-key":
+            "4fdbde75c1msh8f2f71bd26245c7p153e40jsn7f62e28bb370",
+        },
+      }
+    );
+
+    const ownerResponse = await axios.get(
+      "https://zillow-working-api.p.rapidapi.com/ownerinfo?byzpid=" + propertyId,
+      {
+        headers: {
+          "x-rapidapi-host": "zillow-working-api.p.rapidapi.com",
+          "x-rapidapi-key":
+            "4fdbde75c1msh8f2f71bd26245c7p153e40jsn7f62e28bb370",
+        },
+      }
+    );
+    console.log("Zillow property details response:", priceResponse.data);
+    const propertyDetails = response.data.propertyDetails || {};
     /// call all 5 apis to get all details at once, can use Promise.all for parallel requests
-
-    const expandedProfileResponse = await axios.get(
-      `https://api.gateway.attomdata.com/propertyapi/v1.0.0/property/expandedprofile?id=${propertyId}`,
-      {
-        headers: {
-          Accept: "application/json",
-          apikey: ATTOM_API_KEY,
-        },
-      }
-    );
-
-    console.log("Expanded profile response:", expandedProfileResponse.data);
-    const detailOwnerResponse = await axios.get(
-      `https://api.gateway.attomdata.com/propertyapi/v1.0.0/property/detailowner?id=${propertyId}`,
-      {
-        headers: {
-          Accept: "application/json",
-          apikey: ATTOM_API_KEY,
-        },
-      }
-    );
-
-    console.log("Detail owner response:", detailOwnerResponse.data);
-    const salesHistoryResponse = await axios.get(
-      `https://api.gateway.attomdata.com/propertyapi/v1.0.0/saleshistory/expandedhistory?id=${propertyId}`,
-      {
-        headers: {
-          Accept: "application/json",
-          apikey: ATTOM_API_KEY,
-        },
-      }
-    );
-
-    // console.log("Sales history response:", salesHistoryResponse.data);
-
-    const assessmentHistoryResponse = await axios.get(
-      `https://api.gateway.attomdata.com/propertyapi/v1.0.0/assessmenthistory/detail?attomid=${propertyId}`,
-      {
-        headers: {
-          Accept: "application/json",
-          apikey: ATTOM_API_KEY,
-        },
-      }
-    );
-
-    // console.log("Assessment history response:", assessmentHistoryResponse.data);
-
-    const propertyDetails = attomResponse.data.property;
-    // const expandedProfile = expandedProfileResponse.data.property;
-    // const detailOwner = detailOwnerResponse.data.property;
-    // const salesHistory = salesHistoryResponse.data.salesHistory;
-    // const assessmentHistory = assessmentHistoryResponse.data.assessmentHistory;
-
-  
-
-    if (!propertyDetails || propertyDetails.length === 0) {
-      return res.status(404).json({
-        message: "Property not found",
-        status: false,
-      });
+    const propertyData = {
+      resoFacts: propertyDetails.resoFacts || {},
+      price: propertyDetails.price || {},
+      address: propertyDetails.address || {},
+      yearBuilt: propertyDetails.yearBuilt || "N/A",
+      county: propertyDetails.county || "N/A",
+      zestimate: propertyDetails.zestimate || {},
+      rentZestimate: propertyDetails.rentZestimate || {},
+      media: propertyDetails.media || {},
+      originalPhotos: propertyDetails.originalPhotos,
+      taxHistory: propertyDetails.taxHistory || [],
+      homeStatus: propertyDetails.homeStatus || "N/A",
+      schools: propertyDetails.schools || [],
+      description: propertyDetails.description || "No description available",
+      priceHistory: priceResponse.data.priceHistory || [],
+      ownerInfo: ownerResponse.data
     }
-
-    if (!propertyDetails[0].identifier || !propertyDetails[0].identifier.attomId) {
-      return res.status(404).json({
-        message: "Property ID not found",
-        status: false,
-      });
-    }
-    // Prepare the response data
-    const utilities = propertyDetails[0].utilities || {};
-    const buildingInfo = propertyDetails[0].building || {};
-    const ownerInfo = detailOwnerResponse.data.property[0].owner || {};
-    const salesHistory = salesHistoryResponse.data.property[0].saleHistory || [];
-    const assessmentHistory = assessmentHistoryResponse.data.property[0].assessmentHistory || [];
-    console.log("Owner Info:", ownerInfo);
-
-    const responseData = {
-      id: propertyDetails[0].identifier.attomId,
-      address: propertyDetails[0].address || "Address not available",
-      type: propertyDetails[0].summary?.propclass || "Apartment",
-      area: `${
-        buildingInfo.size?.universalsize
-          ? buildingInfo.size.universalsize.toLocaleString()
-          : "N/A"
-      } sq ft`,
-      yearBuilt: propertyDetails[0].summary?.yearbuilt || "N/A",
-      bedrooms: propertyDetails[0].summary?.bedrooms || "N/A",
-      bathrooms: propertyDetails[0].summary?.bathrooms || "N/A",
-      stories: buildingInfo.stories || "N/A",
-      heatingType: utilities.heatingType || "N/A",
-      coolingType: utilities.coolingType || "N/A",
-      ownerInfo,
-      salesHistory,
-      assessmentHistory,
-    };
+    
 
     res.status(200).json({
       message: "Property details fetched successfully",
       status: true,
-      data: responseData,
+      data: propertyData,
     });
   } catch (error) {
     console.error(
@@ -194,7 +148,7 @@ const propertyDetails = async (req, res) => {
 };
 
 /**
- * Get all property types 
+ * Get all property types
  */
 const getPropertyTypes = async (req, res) => {
   try {
@@ -215,10 +169,10 @@ const getPropertyTypes = async (req, res) => {
     console.error("Error fetching property types:", error.message);
     res.status(500).json({ error: "Failed to fetch property types" });
   }
-}
+};
 
 module.exports = {
   propertyList,
   propertyDetails,
-  getPropertyTypes
+  getPropertyTypes,
 };

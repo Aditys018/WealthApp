@@ -740,13 +740,10 @@ const revokeEmployeeAccess = async (req, res) => {
         .json({ message: "Employee not found in this company" });
     }
 
-    // Remove the company association from the employee
-    employee.company = undefined;
-    if (employee.role === "COMPANY_ADMIN" || employee.role === "EMPLOYEE") {
-      employee.role = "USER";
-    }
-
-    await employee.save();
+    // Remove the user
+    await UserProfile.findByIdAndDelete(employeeId);
+    console.log("Employee removed:", employeeId);
+    
 
     // Remove the employee from the company's employees array
     company.employees = company.employees.filter(
