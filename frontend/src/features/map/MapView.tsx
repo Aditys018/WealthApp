@@ -1,22 +1,21 @@
-import React, { useState, useCallback, useRef, useEffect } from 'react'
+import { useListPlacesQuery } from '@/api'
+import { Badge } from '@/components/ui/badge'
+import { Button } from '@/components/ui/button'
 import {
   GoogleMap,
+  InfoWindow,
   LoadScript,
   Marker,
-  InfoWindow,
 } from '@react-google-maps/api'
-import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
-import { Button } from '@/components/ui/button'
-import { Badge } from '@/components/ui/badge'
-import { MapPin, Bed, Bath, Square, Eye } from 'lucide-react'
-import { useListPlacesQuery } from '@/api'
+import { Bath, Bed, Eye, MapPin, Square } from 'lucide-react'
+import { useCallback, useEffect, useRef, useState } from 'react'
 
 // Sample property data
 
 // Map container style
 const containerStyle = {
   width: '100%',
-  height: '900px',
+  height: '710px',
   borderRadius: '12px',
 }
 
@@ -50,7 +49,7 @@ const options = {
     },
     {
       elementType: 'labels.text.stroke',
-      stylers: [{ color: '#212121' }],
+      stylers: [{ color: '#000000' }],
     },
     {
       featureType: 'administrative',
@@ -60,7 +59,7 @@ const options = {
     {
       featureType: 'administrative.country',
       elementType: 'labels.text.fill',
-      stylers: [{ color: '#9e9e9e' }],
+      stylers: [{ color: '#ffffff' }],
     },
     {
       featureType: 'administrative.land_parcel',
@@ -69,12 +68,12 @@ const options = {
     {
       featureType: 'administrative.locality',
       elementType: 'labels.text.fill',
-      stylers: [{ color: '#bdbdbd' }],
+      stylers: [{ color: '#ffffff' }],
     },
     {
       featureType: 'poi',
       elementType: 'labels.text.fill',
-      stylers: [{ color: '#757575' }],
+      stylers: [{ color: '#ffffff' }],
     },
     {
       featureType: 'poi.park',
@@ -99,7 +98,7 @@ const options = {
     {
       featureType: 'road',
       elementType: 'labels.text.fill',
-      stylers: [{ color: '#8a8a8a' }],
+      stylers: [{ color: '#ffffff' }],
     },
     {
       featureType: 'road.arterial',
@@ -119,12 +118,12 @@ const options = {
     {
       featureType: 'road.local',
       elementType: 'labels.text.fill',
-      stylers: [{ color: '#616161' }],
+      stylers: [{ color: '#ffffff' }],
     },
     {
       featureType: 'transit',
       elementType: 'labels.text.fill',
-      stylers: [{ color: '#757575' }],
+      stylers: [{ color: '#ffffff' }],
     },
     {
       featureType: 'water',
@@ -134,7 +133,7 @@ const options = {
     {
       featureType: 'water',
       elementType: 'labels.text.fill',
-      stylers: [{ color: '#3d3d3d' }],
+      stylers: [{ color: '#ffffff' }],
     },
   ],
 }
@@ -286,110 +285,165 @@ const PropertyMap = ({ googleApiKey }) => {
         libraries={['geometry', 'places']}
         googleMapsApiKey="AIzaSyCOTKgJdgCv_nu989DjZjpej0pv9dLBfs4"
       >
-        <input
-          ref={inputRef}
-          id="search-box"
-          type="text"
-          placeholder="Search for a location..."
-          className="z-10 w-full p-2 rounded-md shadow-md
-           bg-white border border-gray-300 focus:outline-none focus:ring-2
-            focus:ring-gray-100"
-        />
+        <div className="flex gap-2 mb-4 mt-4">
+          <input
+            ref={inputRef}
+            id="search-box"
+            type="text"
+            placeholder="Search for a location..."
+            className="z-10 w-96 p-2 rounded-md shadow-md
+             bg-white border border-gray-300 focus:outline-none focus:ring-2
+              focus:ring-gray-100 ml-100"
+          />
+          
+          <select 
+            className="p-2 rounded-md shadow-md bg-white border border-gray-300 focus:outline-none focus:ring-2 focus:ring-gray-100"
+            placeholder="Property Type"
+          >
+            <option value="">Property Type</option>
+            <option value="house">House</option>
+            <option value="apartment">Apartment</option>
+            <option value="condo">Condo</option>
+            <option value="townhouse">Townhouse</option>
+            <option value="nursery">Nursery</option>
+            <option value="greenhouse">Greenhouse</option>
+            <option value="ployhouse">Ployhouse</option>
+          </select>
 
-        <GoogleMap
-          ref={googleMapsRef}
-          // onBoundsChanged={onBoundsChanged}
-          mapContainerStyle={containerStyle}
-          mapContainerClassName="rounded-xl shadow-lg"
-          center={center}
-          zoom={17}
-          onLoad={onLoad}
-          onUnmount={onUnmount}
-          options={options}
-          onIdle={handleMapIdle}
-        >
-          {data?.data.map((property) => (
-            <Marker
-              key={property.id}
-              position={{ lat: property.lat, lng: property.lng }}
-              onClick={() => handleMarkerClick(property)}
-              icon={propertyIcon}
-              title={property.title}
+          <input
+            type="text"
+            placeholder="Zipcode"
+            className="w-32 p-2 rounded-md shadow-md bg-white border border-gray-300 focus:outline-none focus:ring-2 focus:ring-gray-100"
+          />
+
+          <div className="flex gap-2">
+            <input
+              type="number"
+              placeholder="Min Price"
+              className="w-32 p-2 rounded-md shadow-md bg-white border border-gray-300 focus:outline-none focus:ring-2 focus:ring-gray-100"
             />
-          ))}
+            <input
+              type="number"
+              placeholder="Max Price"
+              className="w-32 p-2 rounded-md shadow-md bg-white border border-gray-300 focus:outline-none focus:ring-2 focus:ring-gray-100"
+            />
+          </div>
+        </div>
 
-          {selectedProperty && (
-            <InfoWindow
-              position={{
-                lat: selectedProperty.lat,
-                lng: selectedProperty.lng,
-              }}
-              onCloseClick={handleInfoWindowClose}
-            >
-              <div className="max-w-sm p-0 m-0">
-                <div className="relative">
-                  <img
-                    src={selectedProperty.image}
-                    alt={selectedProperty.title}
-                    className="w-full h-32 object-cover rounded-t-lg"
-                  />
-                  <Badge
-                    variant={getStatusBadgeVariant(selectedProperty.status)}
-                    className="absolute top-2 right-2"
-                  >
-                    {selectedProperty.status}
-                  </Badge>
-                </div>
-                <div className="p-3">
-                  <h3 className="text-lg font-semibold text-gray-900 mb-1">
-                    {selectedProperty.title}
-                  </h3>
-                  <p className="text-xl font-bold text-red-600 mb-2">
-                    {selectedProperty.price}
-                  </p>
-                  <div className="space-y-1 text-sm text-gray-600 mb-3">
-                    <div className="flex items-center gap-1">
-                      <Badge variant="outline" className="text-xs">
-                        {selectedProperty.type}
-                      </Badge>
-                    </div>
-                    <div className="flex items-center gap-4">
-                      <div className="flex items-center gap-1">
-                        <Bed className="w-3 h-3" />
-                        <span>{selectedProperty.bedrooms}</span>
-                      </div>
-                      <div className="flex items-center gap-1">
-                        <Bath className="w-3 h-3" />
-                        <span>{selectedProperty.bathrooms}</span>
-                      </div>
-                      <div className="flex items-center gap-1">
-                        <Square className="w-3 h-3" />
-                        <span>{selectedProperty.area}</span>
-                      </div>
-                    </div>
-                    <div className="flex items-center gap-1">
-                      <MapPin className="w-3 h-3" />
-                      <span>{selectedProperty.address}</span>
-                    </div>
+        <div className="relative">
+          <GoogleMap
+            ref={googleMapsRef}
+            mapContainerStyle={containerStyle}
+            mapContainerClassName="rounded-xl shadow-lg"
+            center={center}
+            zoom={17}
+            onLoad={onLoad}
+            onUnmount={onUnmount}
+            options={options}
+            onIdle={handleMapIdle}
+          >
+            {data?.data.map((property) => (
+              <Marker
+                key={property.id}
+                position={{ lat: property.lat, lng: property.lng }}
+                onClick={() => handleMarkerClick(property)}
+                icon={propertyIcon}
+                title={property.title}
+              />
+            ))}
+
+            {selectedProperty && (
+              <InfoWindow
+                position={{
+                  lat: selectedProperty.lat,
+                  lng: selectedProperty.lng,
+                }}
+                onCloseClick={handleInfoWindowClose}
+              >
+                <div className="max-w-sm p-0 m-0">
+                  <div className="relative">
+                    <img
+                      src={selectedProperty.image}
+                      alt={selectedProperty.title}
+                      className="w-full h-32 object-cover rounded-t-lg"
+                    />
+                    <Badge
+                      variant={getStatusBadgeVariant(selectedProperty.status)}
+                      className="absolute top-2 right-2"
+                    >
+                      {selectedProperty.status}
+                    </Badge>
                   </div>
-                  <Button
-                    size="sm"
-                    className="w-full"
-                    onClick={() => {
-                      console.log(
-                        'View details for property:',
-                        selectedProperty.id,
-                      )
-                    }}
-                  >
-                    <Eye className="w-4 h-4 mr-1" />
-                    View Details
-                  </Button>
+                  <div className="p-3">
+                    <h3 className="text-lg font-semibold text-gray-900 mb-1">
+                      {selectedProperty.title}
+                    </h3>
+                    <p className="text-xl font-bold text-red-600 mb-2">
+                      {selectedProperty.price}
+                    </p>
+                    <div className="space-y-1 text-sm text-gray-600 mb-3">
+                      <div className="flex items-center gap-1">
+                        <Badge variant="outline" className="text-xs">
+                          {selectedProperty.type}
+                        </Badge>
+                      </div>
+                      <div className="flex items-center gap-4">
+                        <div className="flex items-center gap-1">
+                          <Bed className="w-3 h-3" />
+                          <span>{selectedProperty.bedrooms}</span>
+                        </div>
+                        <div className="flex items-center gap-1">
+                          <Bath className="w-3 h-3" />
+                          <span>{selectedProperty.bathrooms}</span>
+                        </div>
+                        <div className="flex items-center gap-1">
+                          <Square className="w-3 h-3" />
+                          <span>{selectedProperty.area}</span>
+                        </div>
+                      </div>
+                      <div className="flex items-center gap-1">
+                        <MapPin className="w-3 h-3" />
+                        <span>{selectedProperty.address}</span>
+                      </div>
+                    </div>
+                    <Button
+                      size="sm"
+                      className="w-full"
+                      onClick={() => {
+                        console.log(
+                          'View details for property:',
+                          selectedProperty.id,
+                        )
+                      }}
+                    >
+                      <Eye className="w-4 h-4 mr-1" />
+                      View Details
+                    </Button>
+                  </div>
                 </div>
+              </InfoWindow>
+            )}
+          </GoogleMap>
+
+          {/* Loading Overlay */}
+          {isLoading && (
+            <div className="absolute inset-0 bg-black/30 flex items-center justify-center rounded-xl">
+              <div className="bg-[#262626] p-4 rounded-lg shadow-lg flex items-center gap-2">
+                <div className="animate-spin rounded-full h-6 w-6 border-b-2 border-[#ff9500]"></div>
+                <span className="text-white">Loading properties...</span>
               </div>
-            </InfoWindow>
+            </div>
           )}
-        </GoogleMap>
+
+          {/* Error State */}
+          {isError && (
+            <div className="absolute inset-0 bg-black/30 flex items-center justify-center rounded-xl">
+              <div className="bg-white p-4 rounded-lg shadow-lg">
+                <span className="text-red-600">Error loading properties. Please try again.</span>
+              </div>
+            </div>
+          )}
+        </div>
       </LoadScript>
 
       {/* Property list sidebar */}
