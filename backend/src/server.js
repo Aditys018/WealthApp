@@ -8,14 +8,14 @@ var path = require("path");
 var db = require("./model");
 var routes = require("./routes");
 var app = express();
-var PORT = 8080;
+var PORT = process.env.PORT || 8080;
 var DB_URL = process.env.DB_HOST ||
     "mongodb+srv://divyansh0908:rxAxc38ppfBBNzrh@sandbox.vwhnx.mongodb.net/?retryWrites=true&w=majority&appName=Sandbox";
 // Serve uploads folder publicly
 app.use("/uploads", express.static(path.join(path.dirname(""), "uploads")));
 db.mongoose
     .connect(DB_URL, {
-    dbName: "wealth-map",
+    dbName: "wealth-map-challenge",
     useBigInt64: true,
 })
     .then(function () {
