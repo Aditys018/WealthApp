@@ -1,0 +1,33 @@
+runtime: nodejs20
+
+instance_class: F2
+
+env_variables:
+  BUCKET_NAME: "wealthmap-backend"
+  EMAIL_HOST: "live.smtp.mailtrap.io"
+  EMAIL_PORT: 587
+  EMAIL_SECURE: false
+  EMAIL_USER: smtp@mailtrap.io
+  EMAIL_PASSWORD: e675c59a2b0e8663aee0c6d72f28e5a8
+  EMAIL_FROM: hello@divyanshanand.info
+
+
+  # JWT Configuration
+  JWT_EXPIRES_IN: 1d
+
+  JWT_TOKEN_SECRET: 769a321c563e93ab5e98280f624816c61d9d6ab31818040c13312320ce88a2882acaccc26a614c51fa1255ee046bce2188cd921a797d2d0f20bd3724c389c8f3b373b81838e226c8d393f27034f8fe2253fb3d834cee8096fc4b96ba87eebca2a5542be6c397ea21aaee36cd91b61bab72e5147068719e4ac57d8f9162417945
+  REFRESH_TOKEN_SECRET: 11e74c6b4b269c66551a9dcb16835e3bc6be1d5b025f2098b28c2572cf4c03c390b58b4a504b0387c180829544210ad9dd2acf975833a9d8078a24358fcd191af3ada38743838864abedba3403af0d2d21c9636e07f3a5c4c8afa5b1aa19bc61ae4cbc4d908ae66a39767e0d6c5b28c0dae342a5f0531209d765c82e48fbeee7
+  # Database Configuration
+
+  # Server Configuration
+  NODE_ENV: development
+  HOST_NAME: http://pure-lantern-460811-s7.el.r.appspot.com
+
+handlers:
+  - url: /uploads
+    static_dir: uploads
+
+  - url: /.*
+    secure: always
+    redirect_http_response_code: 301
+    script: auto

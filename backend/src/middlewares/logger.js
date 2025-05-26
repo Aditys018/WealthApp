@@ -1,5 +1,6 @@
 const fs = require("fs");
 const path = require("path");
+const { Log } = require("../model/log.model"); // Import the Log model
 
 const logFilePath = path.join(__dirname, "../../logs", "requests.log");
 
@@ -18,7 +19,27 @@ const logger = (req, res, next) => {
     timestamp: new Date().toISOString(), // Timestamp of the request
   };
 
-  const logMessage = `${logEntry.timestamp} - ID: ${logEntry.id} - Route: ${logEntry.route} - Method: ${logEntry.method} - Query: ${JSON.stringify(
+    // Save the log entry to the database
+
+    const log = new Log({
+    userId: logEntry.id,
+    route: logEntry.route,
+    method: logEntry.method,
+    query: logEntry.query,
+    body: logEntry.body,
+    timestamp: logEntry.timestamp,
+  });
+  log.save()
+    .then(() => {
+      console.log("Log entry saved to database");
+    })
+    .catch((err) => {
+      console.error("Error saving log entry to database:", err);
+    });
+
+  const logMessage = `${logEntry.timestamp} - ID: ${logEntry.id} - Route: ${
+    logEntry.route
+  } - Method: ${logEntry.method} - Query: ${JSON.stringify(
     logEntry.query
   )} - Body: ${JSON.stringify(logEntry.body)}\n`;
 
@@ -32,4 +53,4 @@ const logger = (req, res, next) => {
   next();
 };
 
-module.exports = logger;
+module.exports = { logger };
