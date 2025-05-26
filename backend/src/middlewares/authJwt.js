@@ -28,8 +28,9 @@ const checkRole = (allowedRoles) => {
        // Append the decoded token to the request object
       req.user = {
         id: decoded.id,
+        name: decoded.name,
+        permissions: decoded.permissions,
       };
-      console.log("User ID:", req.user.id);
       next();
     } catch (error) {
       if (error instanceof jwt.TokenExpiredError) {

@@ -1,4 +1,3 @@
-const express = require("express");
 const { Router } = require("express");
 const multer = require("multer");
 
@@ -12,7 +11,6 @@ const storage = multer.diskStorage({
 });
 
 const fileFilter = (_, file, cb) => {
-  // reject a file
   if (
     file.mimetype === "image/jpeg" ||
     file.mimetype === "image/png" ||
@@ -41,7 +39,7 @@ const {
   resendOTP,
   changePassword,
 } = require("../controller");
-const { checkRole } = require("../middlewares");
+const { checkRole, log } = require("../middlewares");
 
 const router = Router();
 
@@ -77,15 +75,16 @@ const uploadMiddleware = (req, res, next) => {
   });
 };
 
-router.post("/login", loginUser);
-router.post("/verify-otp", verifyLoginOTP);
-router.post("/resend-otp", resendOTP);
+router.post("/login", log, loginUser);
+router.post("/verify-otp", log, verifyLoginOTP);
+router.post("/resend-otp", log, resendOTP);
 // router.patch("/:id", updateUserProfile);
-router.get("/:id", getUserProfile);
-router.post("/upload", uploadMiddleware, uploadImages);
+router.get("/:id", log, getUserProfile);
+router.post("/upload", uploadMiddleware, log, uploadImages);
 router.post(
   "/change-password",
   checkRole(["ADMIN", "COMPANY_ADMIN", "EMPLOYEE"]),
+  log,
   changePassword
 );
 

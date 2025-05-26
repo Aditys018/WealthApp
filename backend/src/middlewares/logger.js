@@ -1,5 +1,6 @@
 const fs = require("fs");
 const path = require("path");
+const { Log } = require("../model/log.model"); // Import the Log model
 
 const logFilePath = path.join(__dirname, "../../logs", "requests.log");
 
@@ -11,6 +12,7 @@ if (!fs.existsSync(path.dirname(logFilePath))) {
 const logger = (req, res, next) => {
   const logEntry = {
     id: req.user?.id || "Anonymous", // Extract ID from JWT if available
+    name: req.user?.name || "Anonymous", // Extract name from JWT if available
     route: req.originalUrl, // Route accessed
     method: req.method, // HTTP method
     query: req.query, // Query parameters
@@ -18,7 +20,29 @@ const logger = (req, res, next) => {
     timestamp: new Date().toISOString(), // Timestamp of the request
   };
 
-  const logMessage = `${logEntry.timestamp} - ID: ${logEntry.id} - Route: ${logEntry.route} - Method: ${logEntry.method} - Query: ${JSON.stringify(
+  // Save the log entry to the database
+
+  const log = new Log({
+    userId: logEntry.id,
+    name: logEntry.name,
+    route: logEntry.route,
+    method: logEntry.method,
+    query: logEntry.query,
+    body: logEntry.body,
+    timestamp: logEntry.timestamp,
+  });
+  log
+    .save()
+    .then(() => {
+      console.log("Log entry saved to database");
+    })
+    .catch((err) => {
+      console.error("Error saving log entry to database:", err);
+    });
+
+  const logMessage = `${logEntry.timestamp} - ID: ${logEntry.id} - Route: ${
+    logEntry.route
+  } - Method: ${logEntry.method} - Query: ${JSON.stringify(
     logEntry.query
   )} - Body: ${JSON.stringify(logEntry.body)}\n`;
 
@@ -32,4 +56,4 @@ const logger = (req, res, next) => {
   next();
 };
 
-module.exports = logger;
+module.exports = { logger };

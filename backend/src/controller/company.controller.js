@@ -6,7 +6,8 @@ const {
   generateSecurePassword,
   sendEmployeeInvitationEmail,
 } = require("../utility/mailUtility");
-const { sendOtp, verifyOTP } = require("../utility/mailUtility");
+const { verifyOTP } = require("../utility/mailUtility");
+const { Log } = require("../model");
 
 /**
  * Register a new company
@@ -410,7 +411,7 @@ const inviteEmployee = async (req, res) => {
         await company.save();
 
         // Send invitation email
-        await sendEmployeeInvitationEmail(
+        sendEmployeeInvitationEmail(
           email,
           firstName,
           company.name,
@@ -720,19 +721,11 @@ const getEmployeeStatistics = async (req, res) => {
 const revokeEmployeeAccess = async (req, res) => {
   try {
     const { companyId, employeeId } = req.params;
-    const adminId = req.body.user.id;
 
     // Find the company
     const company = await Company.findById(companyId);
     if (!company) {
       return res.status(404).json({ message: "Company not found" });
-    }
-
-    // Check if the admin is authorized to revoke access in this company
-    if (company.admin.toString() !== adminId) {
-      return res
-        .status(403)
-        .json({ message: "Unauthorized access to company" });
     }
 
     // Find the employee
@@ -777,6 +770,39 @@ const revokeEmployeeAccess = async (req, res) => {
   }
 };
 
+/**
+ * Admin Route
+ * Handles list of activities of employees in a company
+ */
+const getEmployeeActivities = async (req, res) => {
+  try {
+    const { employeeId } = req.params;
+    console.log("User ID:", employeeId);
+    // Find the company of the admin
+    const logs = await Log.find({
+      userId: employeeId,
+    })
+      .sort({ createdAt: -1 }) // Sort by most recent activity
+      .limit(100); // Limit to the last 100 activities
+    if (!logs || logs.length === 0) {
+      return res.status(404).json({
+        message: "No activities found for this employee",
+        data: [],
+      });
+    }
+    res.status(200).json({
+      message: "Employee activities retrieved successfully",
+      data: logs,
+    });
+  } catch (error) {
+    console.error("Error retrieving employee activities:", error);
+    res.status(500).json({
+      message: "Error retrieving employee activities",
+      error: error.message,
+    });
+  }
+};
+
 module.exports = {
   registerCompany,
   getAdminCompanies,
@@ -788,4 +814,6 @@ module.exports = {
   trackEmployeeActivity,
   getEmployeeStatistics,
   revokeEmployeeAccess,
+  getEmployeeActivities,
+
 };
