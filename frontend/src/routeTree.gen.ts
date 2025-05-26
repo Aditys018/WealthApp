@@ -18,6 +18,7 @@ import { Route as LoginImport } from './routes/login'
 import { Route as ListImport } from './routes/list'
 import { Route as InviteImport } from './routes/invite'
 import { Route as DashboardImport } from './routes/dashboard'
+import { Route as AdmincontrolImport } from './routes/admincontrol'
 import { Route as IndexImport } from './routes/index'
 import { Route as DetailsIdImport } from './routes/details/$id'
 import { Route as DemoTanstackQueryImport } from './routes/demo.tanstack-query'
@@ -66,6 +67,12 @@ const DashboardRoute = DashboardImport.update({
   getParentRoute: () => rootRoute,
 } as any)
 
+const AdmincontrolRoute = AdmincontrolImport.update({
+  id: '/admincontrol',
+  path: '/admincontrol',
+  getParentRoute: () => rootRoute,
+} as any)
+
 const IndexRoute = IndexImport.update({
   id: '/',
   path: '/',
@@ -93,6 +100,13 @@ declare module '@tanstack/react-router' {
       path: '/'
       fullPath: '/'
       preLoaderRoute: typeof IndexImport
+      parentRoute: typeof rootRoute
+    }
+    '/admincontrol': {
+      id: '/admincontrol'
+      path: '/admincontrol'
+      fullPath: '/admincontrol'
+      preLoaderRoute: typeof AdmincontrolImport
       parentRoute: typeof rootRoute
     }
     '/dashboard': {
@@ -165,6 +179,7 @@ declare module '@tanstack/react-router' {
 
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
+  '/admincontrol': typeof AdmincontrolRoute
   '/dashboard': typeof DashboardRoute
   '/invite': typeof InviteRoute
   '/list': typeof ListRoute
@@ -178,6 +193,7 @@ export interface FileRoutesByFullPath {
 
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
+  '/admincontrol': typeof AdmincontrolRoute
   '/dashboard': typeof DashboardRoute
   '/invite': typeof InviteRoute
   '/list': typeof ListRoute
@@ -192,6 +208,7 @@ export interface FileRoutesByTo {
 export interface FileRoutesById {
   __root__: typeof rootRoute
   '/': typeof IndexRoute
+  '/admincontrol': typeof AdmincontrolRoute
   '/dashboard': typeof DashboardRoute
   '/invite': typeof InviteRoute
   '/list': typeof ListRoute
@@ -207,6 +224,7 @@ export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
   fullPaths:
     | '/'
+    | '/admincontrol'
     | '/dashboard'
     | '/invite'
     | '/list'
@@ -219,6 +237,7 @@ export interface FileRouteTypes {
   fileRoutesByTo: FileRoutesByTo
   to:
     | '/'
+    | '/admincontrol'
     | '/dashboard'
     | '/invite'
     | '/list'
@@ -231,6 +250,7 @@ export interface FileRouteTypes {
   id:
     | '__root__'
     | '/'
+    | '/admincontrol'
     | '/dashboard'
     | '/invite'
     | '/list'
@@ -245,6 +265,7 @@ export interface FileRouteTypes {
 
 export interface RootRouteChildren {
   IndexRoute: typeof IndexRoute
+  AdmincontrolRoute: typeof AdmincontrolRoute
   DashboardRoute: typeof DashboardRoute
   InviteRoute: typeof InviteRoute
   ListRoute: typeof ListRoute
@@ -258,6 +279,7 @@ export interface RootRouteChildren {
 
 const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
+  AdmincontrolRoute: AdmincontrolRoute,
   DashboardRoute: DashboardRoute,
   InviteRoute: InviteRoute,
   ListRoute: ListRoute,
@@ -280,6 +302,7 @@ export const routeTree = rootRoute
       "filePath": "__root.tsx",
       "children": [
         "/",
+        "/admincontrol",
         "/dashboard",
         "/invite",
         "/list",
@@ -293,6 +316,9 @@ export const routeTree = rootRoute
     },
     "/": {
       "filePath": "index.tsx"
+    },
+    "/admincontrol": {
+      "filePath": "admincontrol.tsx"
     },
     "/dashboard": {
       "filePath": "dashboard.tsx"
