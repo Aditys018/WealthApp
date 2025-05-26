@@ -1,8 +1,9 @@
 const Router = require("express").Router;
 const {
   getAccessTokenFromRefreshToken,
-  sendOtp
+  sendOtp,
 } = require("../controller/identity.controller");
+const { log } = require("../middlewares");
 
 const router = Router();
 
@@ -10,7 +11,7 @@ const router = Router();
 //   res.json({ message: "Admin" });
 // });
 
-router.post("/token", getAccessTokenFromRefreshToken);
-router.post("/send-otp", sendOtp);
+router.post("/token", log, getAccessTokenFromRefreshToken);
+router.post("/send-otp", log, sendOtp);
 
 module.exports = router;

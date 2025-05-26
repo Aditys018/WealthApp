@@ -12,6 +12,7 @@ if (!fs.existsSync(path.dirname(logFilePath))) {
 const logger = (req, res, next) => {
   const logEntry = {
     id: req.user?.id || "Anonymous", // Extract ID from JWT if available
+    name: req.user?.name || "Anonymous", // Extract name from JWT if available
     route: req.originalUrl, // Route accessed
     method: req.method, // HTTP method
     query: req.query, // Query parameters
@@ -19,17 +20,19 @@ const logger = (req, res, next) => {
     timestamp: new Date().toISOString(), // Timestamp of the request
   };
 
-    // Save the log entry to the database
+  // Save the log entry to the database
 
-    const log = new Log({
+  const log = new Log({
     userId: logEntry.id,
+    name: logEntry.name,
     route: logEntry.route,
     method: logEntry.method,
     query: logEntry.query,
     body: logEntry.body,
     timestamp: logEntry.timestamp,
   });
-  log.save()
+  log
+    .save()
     .then(() => {
       console.log("Log entry saved to database");
     })

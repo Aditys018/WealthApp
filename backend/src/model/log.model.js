@@ -3,7 +3,8 @@ const mongoose = require("mongoose");
 // Define the Mongoose schema for logs
 const logSchema = new mongoose.Schema(
   {
-    userId: { type: String, required: false }, // User ID from JWT (optional)
+    userId: { type: String, required: false }, // User ID from JWT (optional),
+    name: { type: String, required: false }, // User name from JWT (optional)
     route: { type: String, required: true }, // Accessed route
     method: { type: String, required: true }, // HTTP method
     query: { type: Object, required: false }, // Query parameters
