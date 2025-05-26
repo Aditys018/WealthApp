@@ -16,27 +16,27 @@ const initialEmployees: Employee[] = [
 export const AdminControl: React.FC = () => {
   const [employees, setEmployees] = useState<Employee[]>(initialEmployees)
 
-  const toggleAccess = (id: string) => {
+  const revokeAccess = (id: string) => {
     setEmployees((prev) =>
       prev.map((emp) =>
-        emp.id === id ? { ...emp, hasAccess: !emp.hasAccess } : emp
+        emp.id === id ? { ...emp, hasAccess: false } : emp
       )
     )
   }
 
   return (
     <section className="max-w-4xl mx-auto p-6 bg-[#1c1c1c] rounded-xl border border-[#333] text-white mt-16">
-      <h2 className="text-2xl font-bold mb-4 text-[#ff9500] mb-12">
+      <h2 className="text-2xl font-bold mb-12 text-[#ff9500]">
         Manage Employee Access & Permissions
       </h2>
 
       <table className="w-full table-auto">
         <thead>
           <tr className="bg-[#2e2e2e] text-left text-sm text-[#ff9500]">
-            <th className="px-4 py-2">NAME</th>
-            <th className="px-4 py-2">EMAIL</th>
-            <th className="px-4 py-2">ACCESS</th>
-            <th className="px-4 py-2">ACTION</th>
+            <th className="px-4 py-2">Name</th>
+            <th className="px-4 py-2">Email</th>
+            <th className="px-4 py-2">Access</th>
+            <th className="px-4 py-2">Action</th>
           </tr>
         </thead>
         <tbody>
@@ -56,16 +56,21 @@ export const AdminControl: React.FC = () => {
                 </span>
               </td>
               <td className="px-4 py-3">
-                <button
-                  onClick={() => toggleAccess(emp.id)}
-                  className={`px-3 py-1 rounded text-sm font-medium border ${
-                    emp.hasAccess
-                      ? 'border-red-500 text-red-400 hover:bg-red-500/10'
-                      : 'border-green-500 text-green-400 hover:bg-green-500/10'
-                  }`}
-                >
-                  {emp.hasAccess ? 'Revoke Access' : 'Grant Access'}
-                </button>
+                {emp.hasAccess ? (
+                  <button
+                    onClick={() => revokeAccess(emp.id)}
+                    className="px-3 py-1 rounded text-sm font-medium border border-red-500 text-red-400 hover:bg-red-500/10"
+                  >
+                    Revoke Access
+                  </button>
+                ) : (
+                  <button
+                    disabled
+                    className="px-3 py-1 rounded text-sm font-medium border border-gray-600 text-gray-500 cursor-not-allowed bg-[#2e2e2e]"
+                  >
+                    Revoked
+                  </button>
+                )}
               </td>
             </tr>
           ))}
@@ -74,5 +79,3 @@ export const AdminControl: React.FC = () => {
     </section>
   )
 }
-
-
