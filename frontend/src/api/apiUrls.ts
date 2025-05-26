@@ -18,3 +18,10 @@ export const inviteEmployeeUrl = (companyId: string) => {
 }
 
 export const resetPasswordUrl = '/user/change-password'
+
+export const revokeEmployeeAccessUrl = (
+  companyId: string,
+  employeeId: string,
+) => {
+  return `/companies/${companyId}/employees/${employeeId}`
+}
