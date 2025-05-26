@@ -15,7 +15,7 @@ export const Navbar = () => {
 
     {
       label: 'PROPERTIES',
-      path: '/properties',
+      path: '/maps',
     },
     {
       label: 'PROFILE',
