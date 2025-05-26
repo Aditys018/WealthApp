@@ -3,6 +3,7 @@ import {
   getCompanyEmployeesListUrl,
   inviteEmployeeUrl,
   registerCompanyUrl,
+  revokeEmployeeAccessUrl,
 } from '@/api'
 import type {
   IRegisterCompanyResponse,
@@ -54,6 +55,20 @@ export const companyService = {
     } catch (error) {
       console.error('erorr inviting employee::', error)
 
+      throw error
+    }
+  },
+  revokeEmployeeAccess: async (
+    companyId: string,
+    employeeId: string,
+  ): Promise<any> => {
+    try {
+      const res = await axiosClient.delete(
+        revokeEmployeeAccessUrl(companyId, employeeId),
+      )
+
+      return res.data
+    } catch (error) {
       throw error
     }
   },
