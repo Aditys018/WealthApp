@@ -51,3 +51,10 @@
 2025-05-26T09:09:06.689Z - ID: 68342af434f8c3f9ac0d7d78 - Route: /companies/68342af434f8c3f9ac0d7d7a/employees - Method: GET - Query: {} - Body: undefined
 2025-05-26T09:09:39.199Z - ID: 68342af434f8c3f9ac0d7d78 - Route: /companies/68342af434f8c3f9ac0d7d7a/employees - Method: GET - Query: {} - Body: undefined
 2025-05-26T09:09:41.017Z - ID: 68342af434f8c3f9ac0d7d78 - Route: /companies/68342af434f8c3f9ac0d7d7a/employees - Method: GET - Query: {} - Body: undefined
+2025-05-26T09:11:22.065Z - ID: 68342af434f8c3f9ac0d7d78 - Route: /companies/68342af434f8c3f9ac0d7d7a/employees - Method: GET - Query: {} - Body: undefined
+2025-05-26T09:15:29.860Z - ID: 68342af434f8c3f9ac0d7d78 - Route: /companies/68342af434f8c3f9ac0d7d7a/employees - Method: GET - Query: {} - Body: undefined
+2025-05-26T09:28:22.483Z - ID: Anonymous - Route: /user/login - Method: POST - Query: {} - Body: {"email":"div.gyan09@gmail.com","password":"Hardik@0908"}
+2025-05-26T09:28:38.080Z - ID: Anonymous - Route: /identity/send-otp - Method: POST - Query: {} - Body: {"firstName":"John","email":"div.gyan09@gmail.com"}
+2025-05-26T09:29:05.603Z - ID: Anonymous - Route: /user/verify-otp - Method: POST - Query: {} - Body: {"otpId":"242a38dd-b6f0-486e-b946-6b2726a8039c","otp":"881811","email":"div.gyan09@gmail.com"}
+2025-05-26T09:31:56.686Z - ID: 68341918b0b83ae6b4026dce - Route: /companies/682efb734f58e57864d0de0e/employees/invite - Method: POST - Query: {} - Body: {"email":"divyanshanand0908@gmail.com","role":"EMPLOYEE","firstName":"Divyansh","lastName":"Anand","user":{"id":"682efb734f58e57864d0de0c"}}
+2025-05-26T09:33:28.290Z - ID: 68341918b0b83ae6b4026dce - Route: /companies/682efb734f58e57864d0de0e/employees/682efb734f58e57864d0de0c/activities - Method: GET - Query: {} - Body: undefined
