@@ -29,3 +29,12 @@
 2025-05-26T07:19:25.848Z - ID: 682efb734f58e57864d0de0c - Route: /companies/682efb734f58e57864d0de0e/employees/682efb734f58e57864d0de0c/activities - Method: GET - Query: {} - Body: undefined
 2025-05-26T07:19:43.215Z - ID: 682efb734f58e57864d0de0c - Route: /companies/682efb734f58e57864d0de0e/employees/682efb734f58e57864d0de0c/activities - Method: GET - Query: {} - Body: undefined
 2025-05-26T07:20:21.735Z - ID: 682efb734f58e57864d0de0c - Route: /companies/682efb734f58e57864d0de0e/employees/682efb734f58e57864d0de0c/activities - Method: GET - Query: {} - Body: undefined
+2025-05-26T07:22:48.580Z - ID: 682efb734f58e57864d0de0c - Route: /companies/:companyId/employees/682efb734f58e57864d0de0c - Method: DELETE - Query: {} - Body: undefined
+2025-05-26T07:22:59.937Z - ID: 682efb734f58e57864d0de0c - Route: /companies/:companyId/employees/682efb734f58e57864d0de0c - Method: DELETE - Query: {} - Body: undefined
+2025-05-26T07:25:04.716Z - ID: 682efb734f58e57864d0de0c - Route: /companies/:companyId/employees/682efb734f58e57864d0de0c - Method: DELETE - Query: {} - Body: undefined
+2025-05-26T07:25:30.541Z - ID: 682efb734f58e57864d0de0c - Route: /companies/:companyId/employees/682efb734f58e57864d0de0c - Method: DELETE - Query: {} - Body: undefined
+2025-05-26T07:25:52.995Z - ID: 682efb734f58e57864d0de0c - Route: /companies/682efb734f58e57864d0de0e/employees/682efb734f58e57864d0de0c - Method: DELETE - Query: {} - Body: undefined
+2025-05-26T07:30:07.823Z - ID: Anonymous - Route: /user/verify-otp - Method: POST - Query: {} - Body: {"otpId":"7f7b9d06-9e0b-4a88-a2b0-ea3ab12a0250","otp":"507070","email":"div.gyan09@gmail.com"}
+2025-05-26T07:32:03.278Z - ID: Anonymous - Route: /identity/send-otp - Method: POST - Query: {} - Body: {"firstName":"Divyansh","email":"div.gyan09@gmail.com"}
+2025-05-26T07:32:39.423Z - ID: Anonymous - Route: /companies/register - Method: POST - Query: {} - Body: {"name":"WealthApp","industry":"IT","email":"div.gyan09@gmail.com","otp":"540540","password":"Aditishinde1804^@","contactPhone":"8080607564","logo":"https://dummyimage.com/300","address":{"street":"13west","city":"Mumbai","state":"Maharashtra","country":"India","zipCode":"342837"},"otpId":"62f0de7a-8259-44df-8238-faac40b1d613"}
+2025-05-26T07:33:21.324Z - ID: Anonymous - Route: /user/login - Method: POST - Query: {} - Body: {"email":"div.gyan09@gmail.com","password":"Aditishinde1804^@"}

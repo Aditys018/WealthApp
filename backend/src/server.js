@@ -15,7 +15,7 @@ var DB_URL = process.env.DB_HOST ||
 app.use("/uploads", express.static(path.join(path.dirname(""), "uploads")));
 db.mongoose
     .connect(DB_URL, {
-    dbName: "wealth-map",
+    dbName: "wealth-map-challenge",
     useBigInt64: true,
 })
     .then(function () {

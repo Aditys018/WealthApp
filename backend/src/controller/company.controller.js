@@ -728,19 +728,11 @@ const getEmployeeStatistics = async (req, res) => {
 const revokeEmployeeAccess = async (req, res) => {
   try {
     const { companyId, employeeId } = req.params;
-    const adminId = req.body.user.id;
 
     // Find the company
     const company = await Company.findById(companyId);
     if (!company) {
       return res.status(404).json({ message: "Company not found" });
-    }
-
-    // Check if the admin is authorized to revoke access in this company
-    if (company.admin.toString() !== adminId) {
-      return res
-        .status(403)
-        .json({ message: "Unauthorized access to company" });
     }
 
     // Find the employee
