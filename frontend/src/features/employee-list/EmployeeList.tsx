@@ -42,7 +42,6 @@ const EmployeeTable = () => {
   const getRoleStyles = (role: string) => {
     switch (role) {
       case 'ADMIN':
-        return 'bg-slate-700/40 text-slate-200 border-slate-500'
       case 'MANAGER':
         return 'bg-slate-700/40 text-slate-200 border-slate-500'
       case 'EMPLOYEE':
@@ -51,7 +50,7 @@ const EmployeeTable = () => {
         return 'bg-zinc-700/40 text-zinc-300 border-zinc-500'
     }
   }
-  
+
   const getPermissionStyles = (permissionKey: string) => {
     const styles: Record<string, string> = {
       canManageEmployees: 'bg-neutral-800 text-neutral-300 border-neutral-600',
@@ -60,7 +59,6 @@ const EmployeeTable = () => {
     }
     return styles[permissionKey] || 'bg-stone-800 text-stone-300 border-stone-600'
   }
-  
 
   const formatDate = (dateString: string) =>
     new Date(dateString).toLocaleDateString('en-US', {
@@ -88,19 +86,19 @@ const EmployeeTable = () => {
         <table className="w-full table-auto">
           <thead>
             <tr className="bg-[#2b2b2b] text-[#ff9500]">
-              <th className="py-4 px-5 text-left text-sm uppercase tracking-wide">First Name</th>
-              <th className="py-4 px-5 text-left text-sm uppercase tracking-wide">Email</th>
-              <th className="py-4 px-5 text-left text-sm uppercase tracking-wide">Role</th>
-              <th className="py-4 px-5 text-left text-sm uppercase tracking-wide">Invitation Date</th>
-              <th className="py-4 px-5 text-left text-sm uppercase tracking-wide">Permissions</th>
+              <th className="py-4 px-5 text-left text-xs uppercase tracking-wide">Name</th>
+              <th className="py-4 px-5 text-left text-xs uppercase tracking-wide">Email</th>
+              <th className="py-4 px-5 text-left text-xs uppercase tracking-wide">Role</th>
+              <th className="py-4 px-5 text-left text-xs uppercase tracking-wide">Date Joined</th>
+              <th className="py-4 px-5 text-left text-xs uppercase tracking-wide">Permissions</th>
             </tr>
           </thead>
-          <tbody className="text-gray-200 divide-y divide-[#333]">
+          <tbody className="text-sm text-gray-200 divide-y divide-[#333]">
             {employees.map((employee) => (
               <tr key={employee._id} className="hover:bg-[#2a2a2a] transition">
-                <td className="py-4 px-5 font-medium">{employee.firstName}</td>
-                <td className="py-4 px-5 text-gray-400">{employee.email}</td>
-                <td className="py-4 px-5">
+                <td className="py-4 px-5 font-medium align-middle whitespace-nowrap">{employee.firstName}</td>
+                <td className="py-4 px-5 text-gray-400 align-middle whitespace-nowrap">{employee.email}</td>
+                <td className="py-4 px-5 align-middle">
                   <span
                     className={`inline-flex items-center px-2.5 py-1 rounded-full text-xs font-medium border ${getRoleStyles(
                       employee.role
@@ -109,10 +107,12 @@ const EmployeeTable = () => {
                     {employee.role}
                   </span>
                 </td>
-                <td className="py-4 px-5 text-gray-400">
-                  {formatDate(employee.company.invitationDate)}
+                <td className="py-4 px-5 align-middle">
+                  <span className="inline-block bg-[#2e2e2e] px-3 py-1 rounded text-xs border border-gray-600 text-gray-300 whitespace-nowrap">
+                    {formatDate(employee.company.invitationDate)}
+                  </span>
                 </td>
-                <td className="py-4 px-5">
+                <td className="py-4 px-5 align-middle">
                   <div className="flex flex-wrap gap-1">
                     {Object.entries(employee.company.permissions)
                       .filter(([_, value]) => value)
