@@ -25,7 +25,7 @@ env_variables:
 
 handlers:
   - url: /uploads
-    static_dir: uploads
+    static_dir: tmp
 
   - url: /.*
     secure: always

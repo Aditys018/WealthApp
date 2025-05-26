@@ -42,36 +42,146 @@ WealthApp provides a comprehensive set of admin features for company management:
 ## API Documentation
 
 ### Authentication APIs
-- `POST /user/register` - Register a new user
-- `POST /user/login` - Login with email and password (triggers OTP email)
-- `POST /user/verify-otp` - Verify the OTP sent during login
-- `POST /user/resend-otp` - Request a new OTP for verification
+- `POST /user/login` 
+  - **Description**: Login with email and password (triggers OTP email)
+  - **Request Body**: 
+    - `email` (string, required): User's email address
+    - `password` (string, required): User's password
+  - **Response**: OTP details for verification
+
+- `POST /user/verify-otp` 
+  - **Description**: Verify the OTP sent during login
+  - **Request Body**: 
+    - `email` (string, required): User's email address
+    - `otp` (string, required): One-time password received via email
+    - `otpId` (string, required): OTP identifier
+  - **Response**: Authentication tokens and user details
+
+- `POST /user/resend-otp` 
+  - **Description**: Request a new OTP for verification
+  - **Request Body**: 
+    - `email` (string, required): User's email address
+  - **Response**: New OTP details
+
+- `POST /user/change-password` 
+  - **Description**: Change user password
+  - **Request Body**: 
+    - `oldPassword` (string, required): Current password
+    - `newPassword` (string, required): New password (min 8 characters)
+  - **Response**: Success message
+
+- `GET /user/random-wealth` 
+  - **Description**: Get random wealth information
+  - **Authentication**: Required (ADMIN, COMPANY_ADMIN, EMPLOYEE)
+  - **Response**: Random wealth data
+
+- `POST /user/upload` 
+  - **Description**: Upload files
+  - **Request Body**: 
+    - Files (multipart/form-data)
+  - **Response**: Uploaded file links
+
+### Identity APIs
+- `POST /identity/token` 
+  - **Description**: Get a new access token using a refresh token
+  - **Request Body**: 
+    - `refreshToken` (string, required): Valid refresh token
+  - **Response**: New access token
+
+- `POST /identity/send-otp` 
+  - **Description**: Send an OTP to an email address
+  - **Request Body**: 
+    - `firstName` (string, required): Recipient's first name
+    - `email` (string, required): Recipient's email address
+  - **Response**: OTP details
 
 ### Company APIs
 
 #### Company Management
-- `POST /companies/register` - Register a new company (automatically becomes company admin)
-- `GET /companies` - Get all companies managed by the user
-- `GET /companies/:id` - Get a specific company by ID
-- `PUT /companies/:id` - Update a company's information
-- `PUT /companies/:id/preferences` - Update a company's data access preferences
+- `POST /company/register` 
+  - **Description**: Register a new company (automatically becomes company admin)
+  - **Request Body**: 
+    - `name` (string, required): Company name
+    - `logo` (string, optional): Company logo URL
+    - `description` (string, optional): Company description
+    - `website` (string, optional): Company website URL
+    - `industry` (string, optional): Company industry
+    - `email` (string, required): Admin email
+    - `password` (string, required): Admin password (min 8 chars, must include uppercase, lowercase, number, special char)
+    - `otp` (string, required): OTP for verification
+    - `otpId` (string, required): OTP identifier
+    - `size` (string, optional): Company size (1-10, 11-50, 51-200, 201-500, 501-1000, 1000+)
+    - `address` (object, optional): Company address
+    - `contactEmail` (string, optional): Contact email
+    - `contactPhone` (string, optional): Contact phone
+    - `dataAccessPreferences` (object, optional): Data access preferences
+  - **Response**: Company and admin details
+
+- `PUT /company/:id` 
+  - **Description**: Update a company's information
+  - **Authentication**: Required (ADMIN, COMPANY_ADMIN)
+  - **Path Parameters**:
+    - `id` (string, required): Company ID
+  - **Request Body**: Company data to update
+  - **Response**: Updated company details
 
 #### Employee Management
-- `POST /companies/:companyId/employees/invite` - Invite an employee to join the company (company admin access)
-- `GET /companies/:companyId/employees` - Get all employees of a company (company admin access)
-- `PUT /companies/:companyId/employees/:employeeId/permissions` - Update an employee's permissions (company admin access)
-- `POST /companies/:companyId/employees/:employeeId/activity` - Track an employee's activity (company admin access)
-- `GET /companies/:companyId/employees/statistics` - Get employee activity statistics (company admin access)
-- `DELETE /companies/:companyId/employees/:employeeId` - Revoke an employee's access (company admin access)
+- `POST /company/:companyId/employees/invite` 
+  - **Description**: Invite an employee to join the company
+  - **Authentication**: Required (ADMIN, COMPANY_ADMIN)
+  - **Path Parameters**:
+    - `companyId` (string, required): Company ID
+  - **Request Body**: 
+    - `email` (string, required): Employee's email
+    - `role` (string, required): Employee's role
+    - `firstName` (string, optional): Employee's first name
+    - `lastName` (string, optional): Employee's last name
+  - **Response**: Employee details
 
-### Employee Onboarding APIs
+- `GET /company/:companyId/employees` 
+  - **Description**: Get all employees of a company
+  - **Authentication**: Required (ADMIN, COMPANY_ADMIN)
+  - **Path Parameters**:
+    - `companyId` (string, required): Company ID
+  - **Response**: List of employees
 
-#### Account Setup
-- `POST /employee/change-password` - Change password with secure validation
-- `POST /employee/mfa/setup` - Enable or disable multi-factor authentication
+- `DELETE /company/:companyId/employees/:employeeId` 
+  - **Description**: Revoke an employee's access
+  - **Authentication**: Required (ADMIN, COMPANY_ADMIN)
+  - **Path Parameters**:
+    - `companyId` (string, required): Company ID
+    - `employeeId` (string, required): Employee ID
+  - **Response**: Success message
 
-#### Terms and Onboarding
-- `POST /employee/terms/accept` - Accept the terms of service
-- `POST /employee/tutorial/progress` - Update tutorial progress
-- `POST /employee/notifications/preferences` - Update notification preferences
-- `GET /employee/onboarding/status` - Get current onboarding status
+- `GET /company/:companyId/employees/:employeeId/activities` 
+  - **Description**: Get employee activities
+  - **Authentication**: Required (ADMIN, COMPANY_ADMIN)
+  - **Path Parameters**:
+    - `companyId` (string, required): Company ID
+    - `employeeId` (string, required): Employee ID
+  - **Response**: Employee activity logs
+
+### Places APIs
+- `GET /places/list-properties` 
+  - **Description**: Get a list of properties
+  - **Authentication**: Required (ADMIN, COMPANY_ADMIN, EMPLOYEE)
+  - **Query Parameters**:
+    - `lat` (number, optional): Latitude (default: 40.7589)
+    - `long` (number, optional): Longitude (default: -73.9851)
+    - `radius` (number, optional): Search radius in miles (default: 5)
+    - `page` (number, optional): Page number (default: 1)
+    - `listingStatus` (string, optional): Listing status (default: "Sold")
+    - `propertyType` (string, optional): Property type
+  - **Response**: List of properties
+
+- `GET /places/property/:id` 
+  - **Description**: Get details of a specific property
+  - **Authentication**: Required (ADMIN, COMPANY_ADMIN, EMPLOYEE)
+  - **Path Parameters**:
+    - `id` (string, required): Property ID
+  - **Response**: Property details
+
+- `GET /places/property-types` 
+  - **Description**: Get all property types
+  - **Authentication**: Required (ADMIN, COMPANY_ADMIN, EMPLOYEE)
+  - **Response**: List of property types
