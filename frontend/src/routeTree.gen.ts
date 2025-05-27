@@ -17,6 +17,7 @@ import { Route as MapsImport } from './routes/maps'
 import { Route as LoginImport } from './routes/login'
 import { Route as ListImport } from './routes/list'
 import { Route as InviteImport } from './routes/invite'
+import { Route as EmployeereportImport } from './routes/employeereport'
 import { Route as DashboardImport } from './routes/dashboard'
 import { Route as AdmincontrolImport } from './routes/admincontrol'
 import { Route as IndexImport } from './routes/index'
@@ -58,6 +59,12 @@ const ListRoute = ListImport.update({
 const InviteRoute = InviteImport.update({
   id: '/invite',
   path: '/invite',
+  getParentRoute: () => rootRoute,
+} as any)
+
+const EmployeereportRoute = EmployeereportImport.update({
+  id: '/employeereport',
+  path: '/employeereport',
   getParentRoute: () => rootRoute,
 } as any)
 
@@ -114,6 +121,13 @@ declare module '@tanstack/react-router' {
       path: '/dashboard'
       fullPath: '/dashboard'
       preLoaderRoute: typeof DashboardImport
+      parentRoute: typeof rootRoute
+    }
+    '/employeereport': {
+      id: '/employeereport'
+      path: '/employeereport'
+      fullPath: '/employeereport'
+      preLoaderRoute: typeof EmployeereportImport
       parentRoute: typeof rootRoute
     }
     '/invite': {
@@ -181,6 +195,7 @@ export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
   '/admincontrol': typeof AdmincontrolRoute
   '/dashboard': typeof DashboardRoute
+  '/employeereport': typeof EmployeereportRoute
   '/invite': typeof InviteRoute
   '/list': typeof ListRoute
   '/login': typeof LoginRoute
@@ -195,6 +210,7 @@ export interface FileRoutesByTo {
   '/': typeof IndexRoute
   '/admincontrol': typeof AdmincontrolRoute
   '/dashboard': typeof DashboardRoute
+  '/employeereport': typeof EmployeereportRoute
   '/invite': typeof InviteRoute
   '/list': typeof ListRoute
   '/login': typeof LoginRoute
@@ -210,6 +226,7 @@ export interface FileRoutesById {
   '/': typeof IndexRoute
   '/admincontrol': typeof AdmincontrolRoute
   '/dashboard': typeof DashboardRoute
+  '/employeereport': typeof EmployeereportRoute
   '/invite': typeof InviteRoute
   '/list': typeof ListRoute
   '/login': typeof LoginRoute
@@ -226,6 +243,7 @@ export interface FileRouteTypes {
     | '/'
     | '/admincontrol'
     | '/dashboard'
+    | '/employeereport'
     | '/invite'
     | '/list'
     | '/login'
@@ -239,6 +257,7 @@ export interface FileRouteTypes {
     | '/'
     | '/admincontrol'
     | '/dashboard'
+    | '/employeereport'
     | '/invite'
     | '/list'
     | '/login'
@@ -252,6 +271,7 @@ export interface FileRouteTypes {
     | '/'
     | '/admincontrol'
     | '/dashboard'
+    | '/employeereport'
     | '/invite'
     | '/list'
     | '/login'
@@ -267,6 +287,7 @@ export interface RootRouteChildren {
   IndexRoute: typeof IndexRoute
   AdmincontrolRoute: typeof AdmincontrolRoute
   DashboardRoute: typeof DashboardRoute
+  EmployeereportRoute: typeof EmployeereportRoute
   InviteRoute: typeof InviteRoute
   ListRoute: typeof ListRoute
   LoginRoute: typeof LoginRoute
@@ -281,6 +302,7 @@ const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
   AdmincontrolRoute: AdmincontrolRoute,
   DashboardRoute: DashboardRoute,
+  EmployeereportRoute: EmployeereportRoute,
   InviteRoute: InviteRoute,
   ListRoute: ListRoute,
   LoginRoute: LoginRoute,
@@ -304,6 +326,7 @@ export const routeTree = rootRoute
         "/",
         "/admincontrol",
         "/dashboard",
+        "/employeereport",
         "/invite",
         "/list",
         "/login",
@@ -322,6 +345,9 @@ export const routeTree = rootRoute
     },
     "/dashboard": {
       "filePath": "dashboard.tsx"
+    },
+    "/employeereport": {
+      "filePath": "employeereport.tsx"
     },
     "/invite": {
       "filePath": "invite.tsx"

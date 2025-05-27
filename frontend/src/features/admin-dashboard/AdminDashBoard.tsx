@@ -1,6 +1,5 @@
 import { useNavigate } from '@tanstack/react-router'
 import { MdBarChart, MdGroup, MdPerson, MdSettings } from 'react-icons/md'
-import { toast } from 'sonner'
 
 export const AdminDashboard = () => {
   const navigate = useNavigate()
@@ -15,6 +14,10 @@ export const AdminDashboard = () => {
 
   const handleAccessControl = () => {
     navigate({ to: '/admincontrol'})
+  }
+
+  const handleEmployeeReport = () => {
+    navigate({to: '/employeereport'})
   }
 
   const dashboardItems = [
@@ -39,7 +42,7 @@ export const AdminDashboard = () => {
     {
       title: 'Reports',
       description: 'View company analytics and reports given by employees',
-      action: () => toast.info('Coming soon'),
+      action: handleEmployeeReport,
       icon: <MdBarChart className="w-15 h-15 text-[#ff9500]" />,
     },
   ]
