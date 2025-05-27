@@ -27,8 +27,7 @@ const propertyList = async (req, res) => {
         },
         headers: {
           "x-rapidapi-host": "zillow-working-api.p.rapidapi.com",
-          "x-rapidapi-key":
-            "4fdbde75c1msh8f2f71bd26245c7p153e40jsn7f62e28bb370",
+          "x-rapidapi-key": process.env.ZILLOW_API_KEY,
         },
       }
     );
@@ -69,13 +68,6 @@ const propertyList = async (req, res) => {
   }
 };
 
-/**
- * https://api.gateway.attomdata.com/propertyapi/v1.0.0/property/detail?attomid=156575314
- * https://api.gateway.attomdata.com/propertyapi/v1.0.0/property/expandedprofile?id=156575314
- * https://api.gateway.attomdata.com/propertyapi/v1.0.0/property/detailowner?id=156575314
- * https://api.gateway.attomdata.com/propertyapi/v1.0.0/saleshistory/expandedhistory?id=156575314
- * https://api.gateway.attomdata.com/propertyapi/v1.0.0/assessmenthistory/detail?attomid=184713191
- */
 const propertyDetails = async (req, res) => {
   try {
     const propertyId = req.params.id;
@@ -84,30 +76,29 @@ const propertyDetails = async (req, res) => {
       {
         headers: {
           "x-rapidapi-host": "zillow-working-api.p.rapidapi.com",
-          "x-rapidapi-key":
-            "4fdbde75c1msh8f2f71bd26245c7p153e40jsn7f62e28bb370",
+          "x-rapidapi-key": process.env.ZILLOW_API_KEY,
         },
       }
     );
 
     const priceResponse = await axios.get(
-      "https://zillow-working-api.p.rapidapi.com/pricehistory?byzpid=" + propertyId,
+      "https://zillow-working-api.p.rapidapi.com/pricehistory?byzpid=" +
+        propertyId,
       {
         headers: {
           "x-rapidapi-host": "zillow-working-api.p.rapidapi.com",
-          "x-rapidapi-key":
-            "4fdbde75c1msh8f2f71bd26245c7p153e40jsn7f62e28bb370",
+          "x-rapidapi-key": process.env.ZILLOW_API_KEY,
         },
       }
     );
 
     const ownerResponse = await axios.get(
-      "https://zillow-working-api.p.rapidapi.com/ownerinfo?byzpid=" + propertyId,
+      "https://zillow-working-api.p.rapidapi.com/ownerinfo?byzpid=" +
+        propertyId,
       {
         headers: {
           "x-rapidapi-host": "zillow-working-api.p.rapidapi.com",
-          "x-rapidapi-key":
-            "4fdbde75c1msh8f2f71bd26245c7p153e40jsn7f62e28bb370",
+          "x-rapidapi-key": process.env.ZILLOW_API_KEY,
         },
       }
     );
@@ -129,9 +120,8 @@ const propertyDetails = async (req, res) => {
       schools: propertyDetails.schools || [],
       description: propertyDetails.description || "No description available",
       priceHistory: priceResponse.data.priceHistory || [],
-      ownerInfo: ownerResponse.data
-    }
-    
+      ownerInfo: ownerResponse.data,
+    };
 
     res.status(200).json({
       message: "Property details fetched successfully",
