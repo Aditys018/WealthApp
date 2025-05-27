@@ -80,12 +80,18 @@ axiosClient.interceptors.response.use(
         }
 
         // Get new access token from /token endpoint
-        const response = await axios.post(`${API_BASE_URL}identity/token`, {
-          refreshToken,
-        })
+        const response = await axios.post(
+          `${API_BASE_URL}identity/token`,
+          {
+            refreshToken,
+          },
+          {
+            isPublic: true, // Ensure this request is public
+          },
+        )
 
-        const newAccessToken = response.data?.accessToken
-        const newRefreshToken = response.data?.refreshToken
+        const newAccessToken = response.data?.data?.accessToken
+        const newRefreshToken = response.data?.data?.refreshToken
 
         if (newAccessToken) {
           // Store new tokens
