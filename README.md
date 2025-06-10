@@ -1,45 +1,112 @@
-# WealthApp
+# WealthMap Full-Stack Application
 
-## Admin Features
+[GitHub Repo](https://github.com/Aditys018/WealthApp)  
+[Live Site](https://wealth-map.netlify.app/)  
+[Demo Video](https://www.loom.com/share/9f8cc9308df1419694d67a4de061a2df?sid=b425445f-1e2c-46af-928c-86c967f18e47)  
+[Figma Design](https://www.figma.com/design/0D7dVVaMLc17AsLdRhgyNq/WealthApp?node-id=1-2&t=QAcav5KtgxRuHLNR-1)
 
-WealthApp provides a comprehensive set of admin features for company management:
+WealthMap is a full-stack application that helps users manage and visualize wealth-related data using maps and intuitive UI. The project is built using **React 19**, **Vite**, **Tailwind CSS**, and **TanStack Router** on the frontend, with a **Node.js**, **Express**, and **MongoDB** backend. It also supports features like Google Maps integration, JWT authentication, cloud storage, and scheduled tasks.
 
-### Company Management
-- **Company Registration**: Users can register a company and automatically become the company admin
-- **Company Information Management**: Company admins can view and update company details
-- **Company Data Access Preferences**: Company admins can set company-wide data access preferences
+---
 
-### Employee Management
-- **Employee Invitation**: Company admins can invite employees via email
-- **Permission Management**: Company admins can manage employee permission levels
-- **Activity Monitoring**: Company admins can view employee activity and usage statistics
-- **Access Control**: Company admins can revoke access for former employees
+## Key Features
 
-## User Authentication and Security
+- Company Registration & Role-Based Access  
+- Interactive Property Mapping  
+- Property Details with Ownership History  
+- Owner Net Worth Estimation  
+- Advanced Search & Filtering  
+- Third-Party API Integration (Zillow, PitchBook, etc.)  
 
-### Email Notifications
-- **Registration Confirmation**: Users receive an email confirmation after successful registration
-- **Login OTP Verification**: Two-factor authentication with OTP sent via email during login
-- **Employee Invitations**: Employees receive email invitations with clear instructions and temporary credentials
+---
 
-### OTP Verification
-- **Login Security**: Enhanced security with one-time passwords for login verification
-- **Time-Limited OTPs**: OTPs expire after 10 minutes for improved security
-- **Resend Functionality**: Users can request a new OTP if needed
+## Tech Stack
 
-## Employee Onboarding
+### Frontend
 
-### Secure Account Setup
-- **Email Invitations**: Employees receive email invitations with clear instructions
-- **Secure Password Requirements**: Passwords must meet strict security requirements (length, complexity, etc.)
-- **Multi-Factor Authentication**: Employees can set up MFA for enhanced account security
+- React 19 with Vite  
+- Tailwind CSS 4 + Tailwind Plugins  
+- TanStack Router & React Query  
+- Radix UI + Lucide Icons  
+- Google Maps API  
+- React Hook Form  
+- TypeScript  
 
-### Terms and Onboarding
-- **Terms of Service**: Employees must review and accept the terms of service
-- **Onboarding Tutorial**: Step-by-step tutorial to help employees learn the platform
-- **Notification Preferences**: Employees can customize how they receive notifications
+### Backend
 
-## API Documentation
+- Node.js + Express  
+- MongoDB (via Mongoose)  
+- JWT Authentication  
+- Google Cloud Storage  
+- Nodemailer for Emails  
+- MQTT + node-cron  
+
+---
+
+## Project Structure
+
+```plaintext
+wealthmap
+  - frontend/ # React + Vite app
+  - backend/  # Node.js + Express server
+```
+
+
+## Getting Started
+## Prerequisites
+Node.js v18+
+Yarn or npm
+MongoDB Atlas or Local instance
+Google Cloud Project with Storage enabled
+
+---
+
+## Installation Instructions
+Clone the Repository
+
+```
+git clone https://github.com/Aditys018/WealthApp.git
+cd WealthApp
+```
+
+Set Up Environment Variables
+Backend .env
+Create a .env file inside the backend/ folder:
+
+```
+PORT=5000
+MONGO_URI=your_mongodb_connection_string
+JWT_SECRET=your_jwt_secret
+EMAIL_USER=your_email@example.com
+EMAIL_PASS=your_email_password
+GCLOUD_PROJECT=your_project_id
+GCLOUD_CLIENT_EMAIL=your_client_email
+GCLOUD_PRIVATE_KEY=your_private_key
+GCLOUD_BUCKET=your_bucket_name
+```
+
+Frontend .env
+```
+VITE_GOOGLE_MAPS_API_KEY=your_google_maps_api_key
+```
+
+### Running the App Locally
+Frontend
+```
+cd frontend
+yarn install
+yarn dev
+```
+
+Backend
+```
+cd backend
+yarn install
+yarn dev:server
+```
+
+<details>
+  <summary><strong>API Docuemntation</strong></summary>
 
 ### Authentication APIs
 - `POST /user/login` 
@@ -185,3 +252,8 @@ WealthApp provides a comprehensive set of admin features for company management:
   - **Description**: Get all property types
   - **Authentication**: Required (ADMIN, COMPANY_ADMIN, EMPLOYEE)
   - **Response**: List of property types
+    
+</details>
+
+For any queries or contributions, please visit the [WealthApp](https://github.com/Aditys018/WealthApp) or create an issue.
+
