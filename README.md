@@ -1,6 +1,6 @@
 # WealthMap Full-Stack Application
 
-[GitHub Repo](https://github.com/Aditys018/WealthApp)  
+ 
 [Live Site](https://wealth-map.netlify.app/)  
 [Demo Video](https://www.loom.com/share/9f8cc9308df1419694d67a4de061a2df?sid=b425445f-1e2c-46af-928c-86c967f18e47)  
 [Figma Design](https://www.figma.com/design/0D7dVVaMLc17AsLdRhgyNq/WealthApp?node-id=1-2&t=QAcav5KtgxRuHLNR-1)
